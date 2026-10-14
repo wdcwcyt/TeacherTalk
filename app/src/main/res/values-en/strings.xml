@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">TeacherTalk</string>
+    <!-- 模板占位文案，第一个真实页面接入后可以删掉 -->
+    <string name="hello_world">Hello world!</string>
+</resources>
