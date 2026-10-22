@@ -1,5 +1,48 @@
 <resources>
     <string name="app_name">TeacherTalk</string>
-    <!-- 模板占位文案，第一个真实页面接入后可以删掉 -->
-    <string name="hello_world">Hello world!</string>
+
+    <!-- Login -->
+    <string name="login_teacher_talk">Log in to TeacherTalk</string>
+    <string name="username">Enter username</string>
+    <string name="password">Password</string>
+    <string name="verify">Verification code</string>
+    <string name="login">Log in</string>
+    <string name="retrievepassword">Retrieve password</string>
+    <string name="registeranaccount">Register account</string>
+
+    <!-- Registration -->
+    <string name="register_teacher_talk">Register with TeacherTalk</string>
+    <string name="inputusername">Enter username</string>
+    <string name="inputphone">Enter bound email</string>
+    <string name="enterverificationcode">Enter verification code</string>
+    <string name="sendverificationcode">Send code</string>
+    <string name="confirmpassword">Confirm password</string>
+    <string name="register">Register</string>
+    <string name="returntologin">Back to login</string>
+    <string name="agreeregistration">Agree</string>
+    <string name="privacypolicy">TeacherTalk Privacy Policy</string>
+
+    <!-- Registration errors -->
+    <string name="register_error_empty">Enter username and password</string>
+    <string name="register_error_password_mismatch">Passwords do not match</string>
+    <string name="register_error_account_exists">Account already exists. Please log in.</string>
+    <string name="register_error_unknown">Registration failed. Please try again.</string>
+
+    <!-- Main screen -->
+    <string name="main_forum">Forum</string>
+    <string name="main_order">Orders</string>
+    <string name="main_add">Create content</string>
+    <string name="main_message">Messages</string>
+    <string name="main_profile">Me</string>
+    <string name="main_add_pending">Publishing will be available in a later update.</string>
+    <string name="main_placeholder_description">This page will be completed later.</string>
+
+    <!-- Forum list -->
+    <string name="forum_search">Search posts</string>
+    <string name="forum_search_pending">Search will be available in a later update.</string>
+    <string name="forum_empty">No posts yet</string>
+    <string name="forum_load_failed">Failed to load posts. Please try again.</string>
+    <string name="forum_retry">Reload</string>
+    <string name="forum_refresh_failed">Refresh failed. Please try again later.</string>
+    <string name="forum_load_more_failed">Failed to load more. Pull to refresh and try again.</string>
 </resources>
