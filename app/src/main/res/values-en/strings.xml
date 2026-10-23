@@ -3,30 +3,34 @@
 
     <!-- Login -->
     <string name="login_teacher_talk">Log in to TeacherTalk</string>
-    <string name="username">Enter username</string>
-    <string name="password">Password</string>
-    <string name="verify">Verification code</string>
-    <string name="login">Log in</string>
-    <string name="retrievepassword">Retrieve password</string>
     <string name="registeranaccount">Register account</string>
+    <string name="auth_login_subtitle">Log in with your phone number and SMS code</string>
+    <string name="auth_register_subtitle">Register a parent account with your phone number and SMS code</string>
+    <string name="auth_phone_hint">Enter phone number</string>
+    <string name="auth_code_hint">Enter SMS code</string>
+    <string name="auth_request_code">Get code</string>
+    <string name="auth_sending_code">Sending…</string>
+    <string name="auth_resend_countdown">Get code again in %1$d s</string>
+    <string name="auth_code_sent">Verification code sent</string>
+    <string name="auth_checking_session">Checking your login status…</string>
+    <string name="auth_verify_and_login">Verify and log in</string>
+    <string name="auth_verify_and_register">Verify and register</string>
+    <string name="auth_error_invalid_phone">Enter a valid phone number</string>
+    <string name="auth_error_invalid_code">Enter the 6-digit SMS code</string>
+    <string name="auth_error_invalid_input">The phone number or SMS code is invalid</string>
+    <string name="auth_error_code_expired">The SMS code is incorrect or has expired</string>
+    <string name="auth_error_phone_not_registered">This phone number is not registered. Register first.</string>
+    <string name="auth_error_phone_registered">This phone number is already registered. Log in instead.</string>
+    <string name="auth_error_session_expired">Your session has expired. Log in again.</string>
+    <string name="auth_error_network">Could not connect. Check your network and try again.</string>
+    <string name="auth_error_server">The service is temporarily unavailable. Try again later.</string>
+    <string name="auth_error_unknown">Something went wrong. Try again later.</string>
 
     <!-- Registration -->
     <string name="register_teacher_talk">Register with TeacherTalk</string>
-    <string name="inputusername">Enter username</string>
-    <string name="inputphone">Enter bound email</string>
-    <string name="enterverificationcode">Enter verification code</string>
-    <string name="sendverificationcode">Send code</string>
-    <string name="confirmpassword">Confirm password</string>
-    <string name="register">Register</string>
     <string name="returntologin">Back to login</string>
     <string name="agreeregistration">Agree</string>
     <string name="privacypolicy">TeacherTalk Privacy Policy</string>
-
-    <!-- Registration errors -->
-    <string name="register_error_empty">Enter username and password</string>
-    <string name="register_error_password_mismatch">Passwords do not match</string>
-    <string name="register_error_account_exists">Account already exists. Please log in.</string>
-    <string name="register_error_unknown">Registration failed. Please try again.</string>
 
     <!-- Main screen -->
     <string name="main_forum">Forum</string>

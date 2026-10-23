@@ -1,5 +1,6 @@
 package com.zl.teachertalk.net
 
+import android.util.Log
 import java.util.concurrent.TimeUnit
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -15,7 +16,7 @@ object NetworkClient {
      * 创建全局共享的 [ApiService]。
      *
      * @param sessionManager 为请求提供当前 JWT
-     * @param isDebug 是否启用基础调试日志；只记录请求行和状态，不打印密码请求体
+     * @param isDebug 是否启用基础调试日志；只记录请求行和状态，不打印请求体
      * @return 通过 Retrofit 生成的接口实例
      */
     fun createApiService(
@@ -29,7 +30,9 @@ object NetworkClient {
             .apply {
                 if (isDebug) {
                     addInterceptor(
-                        HttpLoggingInterceptor().apply {
+                        HttpLoggingInterceptor { message ->
+                            Log.e(HTTP_LOG_TAG, message)
+                        }.apply {
                             level = HttpLoggingInterceptor.Level.BASIC
                             redactHeader("Authorization")
                         }
@@ -45,4 +48,6 @@ object NetworkClient {
             .build()
             .create(ApiService::class.java)
     }
+
+    private const val HTTP_LOG_TAG = "TeacherTalkHttp"
 }

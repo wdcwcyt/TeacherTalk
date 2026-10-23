@@ -1,37 +1,61 @@
 package com.zl.teachertalk.bean
 
 /**
- * 登录和注册接口共用的请求体。
+ * 请求短信验证码。
  *
- * 当前只包含账号和密码，后续新增手机号登录时应另建专用请求类，避免影响已有接口。
- *
- * @param account 账号，当前不做大小写转换
- * @param password 原始密码，只在内存和请求体中使用
+ * @param phone 接收验证码的手机号
  */
-data class AuthRequest(
-    val account: String,
-    val password: String
-) {
-    /**
-     * 隐藏密码，防止调试日志直接打印请求对象时泄露凭据。
-     */
-    override fun toString(): String = "AuthRequest(account=$account, password=***)"
-}
+data class SendSmsCodeRequest(
+    val phone: String
+)
 
 /**
- * 认证成功后返回的临时结果。
+ * 短信验证码发送结果。
  *
- * 后端未完成时由本地仓库生成临时 token；接入后端后将换成服务端 JWT，并按接口契约补充用户信息。
+ * @param expiresIn 验证码有效时长，单位由后端契约约定
+ * @param resendAfter 距离下次允许重发的时长，单位由后端契约约定
+ */
+data class SendSmsCodeResponse(
+    val expiresIn: Long,
+    val resendAfter: Long
+)
+
+/**
+ * 使用手机号和短信验证码登录。
  *
- * @param token 认证 token，本地开发期为临时字符串
- * @param account 当前登录账号
+ * @param phone 登录手机号
+ * @param code 短信验证码
+ */
+data class LoginRequest(
+    val phone: String,
+    val code: String
+)
+
+/**
+ * 使用手机号和短信验证码注册。
+ *
+ * @param phone 注册手机号
+ * @param code 短信验证码
+ * @param nickname 可选昵称；为空时由后端决定默认值
+ * @param role 注册角色
+ */
+data class RegisterRequest(
+    val phone: String,
+    val code: String,
+    val nickname: String? = null,
+    val role: String
+)
+
+/**
+ * 登录或注册成功后的认证结果。
+ *
+ * @param token 服务端颁发的认证 token
+ * @param user 当前登录用户的公开信息
  */
 data class AuthResult(
     val token: String,
-    val account: String
+    val user: UserInfoBean
 ) {
-    /**
-     * 隐藏 token，避免日志或异常信息泄露登录凭据。
-     */
-    override fun toString(): String = "AuthResult(account=$account, token=***)"
+    override fun toString(): String =
+        "AuthResult(user=${user.id}, token=***)"
 }

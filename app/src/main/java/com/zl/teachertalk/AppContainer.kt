@@ -5,7 +5,6 @@ import android.content.pm.ApplicationInfo
 import com.zl.teachertalk.net.ApiService
 import com.zl.teachertalk.net.AuthRepository
 import com.zl.teachertalk.net.ForumRepository
-import com.zl.teachertalk.net.LocalAuthStore
 import com.zl.teachertalk.net.NetworkClient
 import com.zl.teachertalk.net.SessionManager
 import com.zl.teachertalk.utils.SPUtils
@@ -16,6 +15,9 @@ import com.zl.teachertalk.utils.SPUtils
  * 这里统一创建配置存储、登录会话、网络接口和认证仓库，避免页面重复创建。
  */
 class AppContainer(context: Context) {
+
+    private val isDebug: Boolean =
+        (context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
 
     /**
      * 普通配置，默认使用 app_sp_config 文件。
@@ -30,26 +32,23 @@ class AppContainer(context: Context) {
     /**
      * 登录会话的唯一实例。
      */
-    val sessionManager: SessionManager = SessionManager(sessionPreferences)
+    val sessionManager: SessionManager = SessionManager(
+        spUtils = sessionPreferences,
+        isDebug = isDebug
+    )
 
     /**
      * Retrofit 接口的唯一实例，自动为已登录请求附加 JWT。
      */
     val apiService: ApiService = NetworkClient.createApiService(
         sessionManager = sessionManager,
-        isDebug = (context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
+        isDebug = isDebug
     )
 
     /**
-     * 认证仓库的唯一实例。
-     *
-     * 后端完成前使用独立的本地账号库；后端完成后只需要替换仓库内部的数据来源。
+     * 认证数据仓库，统一处理验证码、登录和注册接口的响应。
      */
-    val authRepository: AuthRepository = AuthRepository(
-        localAuthStore = LocalAuthStore(
-            SPUtils(context, LocalAuthStore.FILE_NAME)
-        )
-    )
+    val authRepository: AuthRepository = AuthRepository(apiService)
 
     /**
      * 论坛数据仓库；后端接口接入前返回空页，页面加载流程保持不变。

@@ -8,7 +8,7 @@ package com.zl.teachertalk.net
 object NetworkConfig {
 
     /**
-     * Android 模拟器访问电脑本机的后端地址。
+     * 当前开发电脑在局域网中的后端地址，真机调试时使用。
      */
-    const val BASE_URL = "http://10.0.2.2:8080/"
+    const val BASE_URL = "http://192.168.0.207:8080/"
 }

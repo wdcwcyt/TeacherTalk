@@ -1,10 +1,15 @@
 package com.zl.teachertalk.net
 
 import com.zl.teachertalk.bean.ApiResponse
-import com.zl.teachertalk.bean.AuthRequest
 import com.zl.teachertalk.bean.AuthResult
+import com.zl.teachertalk.bean.LoginRequest
+import com.zl.teachertalk.bean.RegisterRequest
+import com.zl.teachertalk.bean.SendSmsCodeRequest
+import com.zl.teachertalk.bean.SendSmsCodeResponse
+import com.zl.teachertalk.bean.UserInfoBean
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
 
 /**
@@ -14,21 +19,21 @@ import retrofit2.http.POST
  */
 interface ApiService {
 
-    /**
-     * 使用账号和密码登录。
-     *
-     * @param request 账号密码请求体
-     * @return HTTP 响应及统一业务数据
-     */
-    @POST("api/auth/login")
-    suspend fun login(@Body request: AuthRequest): Response<ApiResponse<AuthResult>>
+    @POST("api/auth/sms-code")
+    suspend fun sendSmsCode(
+        @Body request: SendSmsCodeRequest
+    ): Response<ApiResponse<SendSmsCodeResponse>>
 
-    /**
-     * 使用账号和密码注册。
-     *
-     * @param request 账号密码请求体
-     * @return HTTP 响应及统一业务数据
-     */
     @POST("api/auth/register")
-    suspend fun register(@Body request: AuthRequest): Response<ApiResponse<AuthResult>>
+    suspend fun register(
+        @Body request: RegisterRequest
+    ): Response<ApiResponse<AuthResult>>
+
+    @POST("api/auth/login")
+    suspend fun login(
+        @Body request: LoginRequest
+    ): Response<ApiResponse<AuthResult>>
+
+    @GET("api/auth/me")
+    suspend fun getCurrentUser(): Response<ApiResponse<UserInfoBean>>
 }

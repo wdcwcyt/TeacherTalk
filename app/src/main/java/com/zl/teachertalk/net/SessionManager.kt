@@ -1,6 +1,7 @@
 package com.zl.teachertalk.net
 
 import android.content.SharedPreferences
+import android.util.Log
 import com.zl.teachertalk.bean.UserInfoBean
 import com.zl.teachertalk.utils.SPUtils
 
@@ -9,8 +10,14 @@ import com.zl.teachertalk.utils.SPUtils
  *
  * 整个应用只由 [com.zl.teachertalk.AppContainer] 创建一个实例，页面不要自己 new。
  * 实际存储交给 [SPUtils]，并且使用独立的会话文件，避免退出登录时清掉普通配置。
+ *
+ * @param spUtils 会话专用存储
+ * @param isDebug 是否输出调试日志；Release 构建不会输出 token
  */
-class SessionManager(private val spUtils: SPUtils) {
+class SessionManager(
+    private val spUtils: SPUtils,
+    private val isDebug: Boolean = false
+) {
 
     /**
      * 当前 token；未登录时为 null。
@@ -61,6 +68,9 @@ class SessionManager(private val spUtils: SPUtils) {
             putString(KEY_TOKEN, token)
             putUserInfo(userInfo)
         }
+        if (isDebug) {
+            Log.e(LOG_TAG, "saveSession token=$token")
+        }
     }
 
     /**
@@ -102,5 +112,6 @@ class SessionManager(private val spUtils: SPUtils) {
         private const val KEY_USER_AVATAR_URL = "user_avatar_url"
         private const val KEY_USER_ROLE = "user_role"
         private const val INVALID_USER_ID = 0L
+        private const val LOG_TAG = "TeacherTalkSession"
     }
 }

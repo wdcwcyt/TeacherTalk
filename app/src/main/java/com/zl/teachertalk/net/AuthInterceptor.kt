@@ -17,7 +17,7 @@ class AuthInterceptor(
     /**
      * 有 token 时添加 `Authorization: Bearer <token>`。
      *
-     * 登录和注册属于公开接口，不携带旧 token，避免过期会话影响重新登录。
+     * 获取验证码、登录和注册属于公开接口，不携带旧 token，避免过期会话影响重新登录。
      */
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
@@ -37,6 +37,7 @@ class AuthInterceptor(
 
     private companion object {
         val PUBLIC_PATHS = setOf(
+            "/api/auth/sms-code",
             "/api/auth/login",
             "/api/auth/register"
         )
