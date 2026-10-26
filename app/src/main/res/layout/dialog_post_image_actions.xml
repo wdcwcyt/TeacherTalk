@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_post_image_actions_sheet"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/post_image_actions_top_padding"
+    android:paddingBottom="@dimen/post_image_actions_bottom_padding">
+
+    <View
+        android:layout_width="@dimen/post_image_actions_handle_width"
+        android:layout_height="@dimen/post_image_actions_handle_height"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/bg_post_image_actions_handle"
+        android:importantForAccessibility="no" />
+
+    <TextView
+        android:id="@+id/tvPreviewImage"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/post_image_action_min_height"
+        android:layout_marginTop="@dimen/post_image_actions_handle_bottom_gap"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:paddingStart="@dimen/post_image_action_horizontal_padding"
+        android:paddingEnd="@dimen/post_image_action_horizontal_padding"
+        android:text="@string/post_image_preview"
+        android:textColor="@color/main_text_primary"
+        android:textSize="@dimen/post_image_action_text_size" />
+
+    <TextView
+        android:id="@+id/tvDeleteImage"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/post_image_action_min_height"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:paddingStart="@dimen/post_image_action_horizontal_padding"
+        android:paddingEnd="@dimen/post_image_action_horizontal_padding"
+        android:text="@string/post_image_delete"
+        android:textColor="@color/post_action_delete"
+        android:textSize="@dimen/post_image_action_text_size" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/main_tab_divider_height"
+        android:layout_marginStart="@dimen/post_image_action_horizontal_padding"
+        android:layout_marginEnd="@dimen/post_image_action_horizontal_padding"
+        android:background="@color/main_divider"
+        android:importantForAccessibility="no" />
+
+    <TextView
+        android:id="@+id/tvCancelImageAction"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/post_image_action_min_height"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:paddingStart="@dimen/post_image_action_horizontal_padding"
+        android:paddingEnd="@dimen/post_image_action_horizontal_padding"
+        android:text="@string/post_image_cancel"
+        android:textColor="@color/main_text_secondary"
+        android:textSize="@dimen/post_image_action_text_size" />
+
+</LinearLayout>

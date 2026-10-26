@@ -6,12 +6,12 @@ package com.zl.teachertalk.bean
  * 列表只携带正文预览，完整正文由帖子详情接口返回。
  *
  * @param id 帖子编号
- * @param title 帖子标题
+ * @param title 帖子标题；没有标题时为空字符串
  * @param contentPreview 服务端截取的正文预览
  * @param authorId 发布者用户 id
  * @param authorNickname 发布者昵称
  * @param authorAvatarUrl 发布者头像地址，没有头像时为 null
- * @param coverImageUrl 第一张帖子图片地址，没有图片时为 null
+ * @param thumbnailUrls 按顺序排列的前三张缩略图地址；兼容服务端异常返回 null 时按空数组处理
  * @param likeCount 点赞数
  * @param favoriteCount 收藏数
  * @param commentCount 评论数
@@ -26,7 +26,7 @@ data class ForumPost(
     val authorId: Long,
     val authorNickname: String,
     val authorAvatarUrl: String? = null,
-    val coverImageUrl: String? = null,
+    val thumbnailUrls: List<String>? = null,
     val likeCount: Int,
     val favoriteCount: Int,
     val commentCount: Int,
@@ -47,5 +47,5 @@ data class ForumPage(
     val list: List<ForumPost>,
     val page: Int,
     val size: Int,
-    val total: Int
+    val total: Long
 )

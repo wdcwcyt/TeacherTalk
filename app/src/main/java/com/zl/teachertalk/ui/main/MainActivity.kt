@@ -1,12 +1,15 @@
 package com.zl.teachertalk.ui.main
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.zl.teachertalk.R
 import com.zl.teachertalk.base.BaseActivity
 import com.zl.teachertalk.databinding.ActivityMainBinding
+import com.zl.teachertalk.ui.forum.CreatePostActivity
 import com.zl.teachertalk.ui.forum.ForumFragment
 import com.zl.teachertalk.ui.message.MessageFragment
 import com.zl.teachertalk.ui.order.OrderFragment
@@ -15,11 +18,22 @@ import com.zl.teachertalk.ui.profile.ProfileFragment
 /**
  * 主页容器：管理四个内容 Fragment，并记录当前显示的内容页。
  *
- * 当前加号只保留操作入口，发帖和发布需求的页面选择流程后续接入。
+ * 当前加号直接进入发布帖子页，发布需求等分流入口后续再扩展。
  */
 class MainActivity : BaseActivity<ActivityMainBinding>() {
 
     private var selectedTabId = R.id.tabForum
+
+    private val createPostLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            selectTab(R.id.tabForum)
+            val forumFragment = supportFragmentManager.findFragmentByTag(TAG_FORUM)
+                as? ForumFragment
+            forumFragment?.refreshAfterPostCreated()
+        }
+    }
 
     override fun onCreateBinding(inflater: LayoutInflater): ActivityMainBinding {
         return ActivityMainBinding.inflate(inflater)
@@ -33,7 +47,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         binding.tabMessage.setOnClickListener { selectTab(R.id.tabMessage) }
         binding.tabProfile.setOnClickListener { selectTab(R.id.tabProfile) }
         binding.tabAdd.setOnClickListener {
-            Toast.makeText(this, R.string.main_add_pending, Toast.LENGTH_SHORT).show()
+            createPostLauncher.launch(Intent(this, CreatePostActivity::class.java))
         }
 
         val restoredTabId = savedInstanceState?.getInt(KEY_SELECTED_TAB, DEFAULT_TAB_ID)

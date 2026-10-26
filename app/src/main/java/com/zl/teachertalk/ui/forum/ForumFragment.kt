@@ -95,6 +95,13 @@ class ForumFragment : BaseFragment<FragmentForumBinding>() {
         }
     }
 
+    /**
+     * 新帖子发布成功后强制刷新列表，不受自动刷新节流限制。
+     */
+    fun refreshAfterPostCreated() {
+        viewModel.refreshManually()
+    }
+
     private fun render(state: ForumUiState) {
         val currentBinding = binding ?: return
 

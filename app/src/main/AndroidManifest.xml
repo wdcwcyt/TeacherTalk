@@ -27,6 +27,10 @@
             android:name=".ui.auth.RegisterActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.forum.CreatePostActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
             android:name=".ui.main.MainActivity"
             android:exported="false" />
     </application>

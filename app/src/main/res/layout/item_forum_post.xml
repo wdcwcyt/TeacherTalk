@@ -24,17 +24,62 @@
             android:maxLines="2"
             android:textColor="@color/main_text_primary"
             android:textSize="@dimen/forum_post_title_text_size"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tvPostPreview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/forum_post_preview_top_margin"
             android:ellipsize="end"
-            android:maxLines="3"
+            android:maxLines="2"
             android:textColor="@color/main_text_secondary"
-            android:textSize="@dimen/forum_post_preview_text_size" />
+            android:textSize="@dimen/forum_post_preview_text_size"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/layoutThumbnails"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/forum_post_thumbnail_top_margin"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/ivPostThumbnail1"
+                android:layout_width="@dimen/forum_post_thumbnail_size"
+                android:layout_height="@dimen/forum_post_thumbnail_size"
+                android:background="@drawable/bg_post_img_content"
+                android:clipToOutline="true"
+                android:importantForAccessibility="no"
+                android:scaleType="centerCrop"
+                android:visibility="gone"
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.TeacherTalk.PostImage" />
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/ivPostThumbnail2"
+                android:layout_width="@dimen/forum_post_thumbnail_size"
+                android:layout_height="@dimen/forum_post_thumbnail_size"
+                android:layout_marginStart="@dimen/forum_post_thumbnail_start_margin"
+                android:background="@drawable/bg_post_img_content"
+                android:clipToOutline="true"
+                android:importantForAccessibility="no"
+                android:scaleType="centerCrop"
+                android:visibility="gone"
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.TeacherTalk.PostImage" />
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/ivPostThumbnail3"
+                android:layout_width="@dimen/forum_post_thumbnail_size"
+                android:layout_height="@dimen/forum_post_thumbnail_size"
+                android:layout_marginStart="@dimen/forum_post_thumbnail_start_margin"
+                android:background="@drawable/bg_post_img_content"
+                android:clipToOutline="true"
+                android:importantForAccessibility="no"
+                android:scaleType="centerCrop"
+                android:visibility="gone"
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.TeacherTalk.PostImage" />
+        </LinearLayout>
     </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>

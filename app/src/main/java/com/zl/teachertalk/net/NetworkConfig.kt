@@ -10,5 +10,5 @@ object NetworkConfig {
     /**
      * 当前开发电脑在局域网中的后端地址，真机调试时使用。
      */
-    const val BASE_URL = "http://192.168.0.207:8080/"
+    const val BASE_URL = "http://10.191.117.240:8080/"
 }

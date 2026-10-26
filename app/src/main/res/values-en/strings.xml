@@ -49,4 +49,28 @@
     <string name="forum_retry">Reload</string>
     <string name="forum_refresh_failed">Refresh failed. Please try again later.</string>
     <string name="forum_load_more_failed">Failed to load more. Pull to refresh and try again.</string>
+
+    <!-- Create post -->
+    <string name="post_page_title">Create post</string>
+    <string name="post_back">Back</string>
+    <string name="post_publish">Publish</string>
+    <string name="post_publishing">Publishing…</string>
+    <string name="post_publish_succeeded">Post published</string>
+    <string name="post_title_hint">Enter a title (optional)</string>
+    <string name="post_content_hint">Share your thoughts…</string>
+    <string name="post_add_image">Add images</string>
+    <string name="post_image_limit_reached">You can upload up to %1$d images.</string>
+    <string name="post_image_too_large">Each image must be %1$d MB or smaller.</string>
+    <string name="post_image_decode_failed">The image could not be read. Select it again.</string>
+    <string name="post_image_write_failed">The image could not be compressed. Try again.</string>
+    <string name="post_image_upload_failed">Image upload failed. Please try again.</string>
+    <string name="post_invalid">The post content is invalid.</string>
+    <string name="post_publish_failed">Failed to publish the post. Please try again.</string>
+    <string name="post_content_required">Enter content before publishing.</string>
+    <string name="post_image_slot_actions">Manage image %1$d</string>
+    <string name="post_image_preview">Preview</string>
+    <string name="post_image_preview_failed">Failed to load the image. Please try again.</string>
+    <string name="post_image_preview_position">%1$d/%2$d</string>
+    <string name="post_image_delete">Delete</string>
+    <string name="post_image_cancel">Cancel</string>
 </resources>

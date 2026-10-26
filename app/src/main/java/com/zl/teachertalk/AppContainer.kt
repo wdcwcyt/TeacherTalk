@@ -7,6 +7,7 @@ import com.zl.teachertalk.net.AuthRepository
 import com.zl.teachertalk.net.ForumRepository
 import com.zl.teachertalk.net.NetworkClient
 import com.zl.teachertalk.net.SessionManager
+import com.zl.teachertalk.utils.PostImageCompressor
 import com.zl.teachertalk.utils.SPUtils
 
 /**
@@ -51,7 +52,12 @@ class AppContainer(context: Context) {
     val authRepository: AuthRepository = AuthRepository(apiService)
 
     /**
-     * 论坛数据仓库；后端接口接入前返回空页，页面加载流程保持不变。
+     * 论坛数据仓库。
      */
-    val forumRepository: ForumRepository = ForumRepository()
+    val forumRepository: ForumRepository = ForumRepository(apiService)
+
+    /**
+     * 发帖图片压缩器，使用 Application Context 避免持有页面。
+     */
+    val postImageCompressor: PostImageCompressor = PostImageCompressor(context.applicationContext)
 }

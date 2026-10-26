@@ -93,7 +93,7 @@ class ForumViewModel(
                 _uiState.value = (_uiState.value ?: ForumUiState()).copy(
                     posts = mergedPosts,
                     currentPage = page.page,
-                    hasMore = page.page * page.size < page.total,
+                    hasMore = page.page.toLong() * page.size < page.total,
                     isLoadingMore = false
                 )
                 failedLoadMorePage = null
@@ -132,7 +132,7 @@ class ForumViewModel(
                 _uiState.value = ForumUiState(
                     posts = page.list.distinctBy { it.id },
                     currentPage = page.page,
-                    hasMore = page.page * page.size < page.total
+                    hasMore = page.page.toLong() * page.size < page.total
                 )
             } catch (exception: CancellationException) {
                 throw exception

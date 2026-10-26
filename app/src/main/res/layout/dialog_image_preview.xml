@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/previewRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    android:clickable="true"
+    android:focusable="true">
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/vpImagePreview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black"
+        android:overScrollMode="never" />
+
+    <TextView
+        android:id="@+id/tvPreviewPosition"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="@dimen/post_image_preview_position_margin"
+        android:layout_marginBottom="@dimen/post_image_preview_position_margin"
+        android:background="@drawable/bg_post_image_preview_position"
+        android:gravity="center"
+        android:paddingStart="@dimen/post_image_preview_position_horizontal_padding"
+        android:paddingTop="@dimen/post_image_preview_position_vertical_padding"
+        android:paddingEnd="@dimen/post_image_preview_position_horizontal_padding"
+        android:paddingBottom="@dimen/post_image_preview_position_vertical_padding"
+        android:textColor="@color/white"
+        android:textSize="@dimen/post_image_preview_position_text_size" />
+
+</FrameLayout>
