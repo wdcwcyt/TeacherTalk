@@ -2,13 +2,18 @@ package com.zl.teachertalk.net
 
 import com.zl.teachertalk.bean.ApiResponse
 import com.zl.teachertalk.bean.AuthResult
+import com.zl.teachertalk.bean.AvatarResponse
 import com.zl.teachertalk.bean.LoginRequest
 import com.zl.teachertalk.bean.RegisterRequest
 import com.zl.teachertalk.bean.SendSmsCodeRequest
 import com.zl.teachertalk.bean.SendSmsCodeResponse
 import com.zl.teachertalk.bean.UserInfoBean
+import java.io.File
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.Response
 
 /**
@@ -63,6 +68,23 @@ class AuthRepository(
             apiService.getCurrentUser().requireData()
         }
 
+    /**
+     * 上传并更新当前用户头像。
+     *
+     * @param file 客户端压缩后的 JPEG 临时文件
+     * @return 更新后的头像地址
+     */
+    suspend fun updateAvatar(file: File): AvatarResponse =
+        withContext(Dispatchers.IO) {
+            val requestBody = file.asRequestBody(JPEG_MEDIA_TYPE.toMediaType())
+            val filePart = MultipartBody.Part.createFormData(
+                name = MULTIPART_FILE_FIELD,
+                filename = file.name,
+                body = requestBody
+            )
+            apiService.updateCurrentUserAvatar(filePart).requireData()
+        }
+
     private fun <T> Response<ApiResponse<T>>.requireData(): T {
         val responseBody = body()
         if (!isSuccessful || responseBody == null || responseBody.code != 0) {
@@ -80,6 +102,8 @@ class AuthRepository(
     }
 
     private companion object {
+        const val JPEG_MEDIA_TYPE = "image/jpeg"
+        const val MULTIPART_FILE_FIELD = "file"
         const val UNKNOWN_RESPONSE_CODE = -1
     }
 }

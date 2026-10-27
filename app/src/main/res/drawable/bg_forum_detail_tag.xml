@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <corners android:radius="@dimen/forum_detail_tag_corner_radius" />
+    <solid android:color="@color/forum_detail_accent_light" />
+</shape>

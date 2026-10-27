@@ -2,8 +2,10 @@ package com.zl.teachertalk.net
 
 import com.zl.teachertalk.bean.ApiResponse
 import com.zl.teachertalk.bean.AuthResult
+import com.zl.teachertalk.bean.AvatarResponse
 import com.zl.teachertalk.bean.CreatedPost
 import com.zl.teachertalk.bean.ForumPage
+import com.zl.teachertalk.bean.ForumPostDetail
 import com.zl.teachertalk.bean.LoginRequest
 import com.zl.teachertalk.bean.PostCreateRequest
 import com.zl.teachertalk.bean.RegisterRequest
@@ -16,8 +18,10 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Multipart
+import retrofit2.http.Path
 import retrofit2.http.Part
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Query
 
 /**
@@ -45,11 +49,22 @@ interface ApiService {
     @GET("api/auth/me")
     suspend fun getCurrentUser(): Response<ApiResponse<UserInfoBean>>
 
+    @Multipart
+    @PUT("api/users/me/avatar")
+    suspend fun updateCurrentUserAvatar(
+        @Part file: MultipartBody.Part
+    ): Response<ApiResponse<AvatarResponse>>
+
     @GET("api/posts")
     suspend fun getPosts(
         @Query("page") page: Int,
         @Query("size") size: Int
     ): Response<ApiResponse<ForumPage>>
+
+    @GET("api/posts/{id}")
+    suspend fun getPostDetail(
+        @Path("id") postId: Long
+    ): Response<ApiResponse<ForumPostDetail>>
 
     @Multipart
     @POST("api/files")

@@ -26,4 +26,24 @@
     <color name="post_publish_light_ripple">#3320242C</color>
     <color name="post_action_delete">#FFD93F3F</color>
     <color name="post_image_preview_position_background">#99000000</color>
+
+    <color name="forum_detail_page_background">#FFF5F7FA</color>
+    <color name="forum_detail_text_primary">#FF111111</color>
+    <color name="forum_detail_text_secondary">#FF6B7280</color>
+    <color name="forum_detail_text_tertiary">#FF9AA2AE</color>
+    <color name="forum_detail_accent_light">#FFBFDDFF</color>
+    <color name="forum_detail_accent">#FF7FB8FF</color>
+    <color name="forum_detail_accent_ripple">#337FB8FF</color>
+    <color name="forum_detail_accent_text">#FF3A76C4</color>
+    <color name="forum_detail_divider">#FFE5E7EB</color>
+    <color name="forum_detail_image_placeholder">#FFEDF0F4</color>
+
+    <color name="profile_page_background">#FFF5F7FA</color>
+    <color name="profile_text_primary">#FF111111</color>
+    <color name="profile_text_secondary">#FF6B7280</color>
+    <color name="profile_stat_label">#FF888888</color>
+    <color name="profile_divider">#FFE5E7EB</color>
+    <color name="profile_edit_background">#FF7FB8FF</color>
+    <color name="profile_chevron">#FF9CA3AF</color>
+    <color name="profile_log_out">#FFD93F3F</color>
 </resources>

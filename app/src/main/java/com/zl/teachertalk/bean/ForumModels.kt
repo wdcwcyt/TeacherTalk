@@ -49,3 +49,40 @@ data class ForumPage(
     val size: Int,
     val total: Long
 )
+
+/**
+ * 帖子详情。
+ *
+ * 相比列表项，详情包含完整正文、全部原图和当前用户对帖子的互动状态。
+ *
+ * @param id 帖子编号
+ * @param title 帖子标题；没有标题时为空字符串
+ * @param content 完整正文
+ * @param imageUrls 按发布顺序排列的原图地址
+ * @param authorId 发布者用户 id
+ * @param authorNickname 发布者昵称
+ * @param authorAvatarUrl 发布者头像地址，没有头像时为 null
+ * @param likeCount 点赞数
+ * @param favoriteCount 收藏数
+ * @param commentCount 评论数
+ * @param liked 当前登录用户是否已点赞
+ * @param favorited 当前登录用户是否已收藏
+ * @param createdAt 发布时间，格式为 `yyyy-MM-dd HH:mm:ss`
+ * @param updatedAt 最后编辑时间，格式为 `yyyy-MM-dd HH:mm:ss`
+ */
+data class ForumPostDetail(
+    val id: Long,
+    val title: String,
+    val content: String,
+    val imageUrls: List<String>,
+    val authorId: Long,
+    val authorNickname: String,
+    val authorAvatarUrl: String?,
+    val likeCount: Int,
+    val favoriteCount: Int,
+    val commentCount: Int,
+    val liked: Boolean,
+    val favorited: Boolean,
+    val createdAt: String,
+    val updatedAt: String
+)

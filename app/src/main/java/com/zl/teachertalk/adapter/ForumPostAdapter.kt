@@ -1,12 +1,15 @@
 package com.zl.teachertalk.adapter
 
+import android.content.res.ColorStateList
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.zl.teachertalk.R
 import com.zl.teachertalk.bean.ForumPost
 import com.zl.teachertalk.databinding.ItemForumPostBinding
 import com.zl.teachertalk.net.NetworkConfig
@@ -14,9 +17,13 @@ import com.zl.teachertalk.net.NetworkConfig
 /**
  * 论坛帖子列表适配器。
  *
- * 卡片优先展示标题；没有标题时展示两行正文预览，并在文字下方展示最多三张缩略图。
+ * 卡片展示作者信息、标题或正文预览、缩略图以及评论和点赞统计。
+ *
+ * @param onPostClick 点击帖子卡片时回调帖子编号
  */
-class ForumPostAdapter : ListAdapter<ForumPost, ForumPostAdapter.PostViewHolder>(DIFF_CALLBACK) {
+class ForumPostAdapter(
+    private val onPostClick: (Long) -> Unit
+) : ListAdapter<ForumPost, ForumPostAdapter.PostViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         val binding = ItemForumPostBinding.inflate(
@@ -24,7 +31,7 @@ class ForumPostAdapter : ListAdapter<ForumPost, ForumPostAdapter.PostViewHolder>
             parent,
             false
         )
-        return PostViewHolder(binding)
+        return PostViewHolder(binding, onPostClick)
     }
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
@@ -35,7 +42,8 @@ class ForumPostAdapter : ListAdapter<ForumPost, ForumPostAdapter.PostViewHolder>
      * 单条帖子卡片的 ViewHolder。
      */
     class PostViewHolder(
-        private val binding: ItemForumPostBinding
+        private val binding: ItemForumPostBinding,
+        private val onPostClick: (Long) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
 
         /**
@@ -44,8 +52,36 @@ class ForumPostAdapter : ListAdapter<ForumPost, ForumPostAdapter.PostViewHolder>
          * @param post 待展示的帖子
          */
         fun bind(post: ForumPost) {
+            binding.root.isClickable = true
+            binding.root.isFocusable = true
+            binding.root.setOnClickListener {
+                onPostClick(post.id)
+            }
+            bindAuthor(post)
             bindText(post)
             bindThumbnails(post.thumbnailUrls.orEmpty())
+            bindStats(post)
+        }
+
+        private fun bindAuthor(post: ForumPost) {
+            val context = binding.root.context
+            binding.tvPostAuthorName.text = post.authorNickname.trim().ifEmpty {
+                context.getString(R.string.forum_post_unknown_author)
+            }
+
+            val avatarUrl = post.authorAvatarUrl?.trim().orEmpty()
+            if (avatarUrl.isEmpty()) {
+                Glide.with(binding.root).clear(binding.ivPostAuthorAvatar)
+                binding.ivPostAuthorAvatar.setImageResource(R.drawable.icon_user_avatar)
+                return
+            }
+
+            Glide.with(binding.root)
+                .load(NetworkConfig.resolveMediaUrl(avatarUrl))
+                .placeholder(R.drawable.icon_user_avatar)
+                .error(R.drawable.icon_user_avatar)
+                .centerCrop()
+                .into(binding.ivPostAuthorAvatar)
         }
 
         private fun bindText(post: ForumPost) {
@@ -79,18 +115,45 @@ class ForumPostAdapter : ListAdapter<ForumPost, ForumPostAdapter.PostViewHolder>
             imageSlots.forEachIndexed { index, imageView ->
                 val imageUrl = imageUrls.getOrNull(index)
                 if (imageUrl == null) {
-                    imageView.isVisible = false
+                    imageView.visibility = View.INVISIBLE
                     Glide.with(binding.root).clear(imageView)
                     imageView.setImageDrawable(null)
                 } else {
-                    imageView.isVisible = true
+                    imageView.visibility = View.VISIBLE
                     Glide.with(binding.root)
-                        .load(resolveImageUrl(imageUrl))
+                        .load(NetworkConfig.resolveMediaUrl(imageUrl))
                         .centerCrop()
                         .into(imageView)
                 }
             }
             binding.layoutThumbnails.isVisible = imageUrls.isNotEmpty()
+        }
+
+        private fun bindStats(post: ForumPost) {
+            val context = binding.root.context
+            binding.tvPostCommentCount.text = post.commentCount.toString()
+            binding.tvPostLikeCount.text = post.likeCount.toString()
+            binding.layoutPostComments.contentDescription = context.getString(
+                R.string.forum_post_comment_count,
+                post.commentCount
+            )
+            binding.layoutPostLikes.contentDescription = context.getString(
+                R.string.forum_post_like_count,
+                post.likeCount
+            )
+
+            val activeColor = context.getColor(R.color.forum_detail_accent)
+            val inactiveColor = context.getColor(R.color.forum_detail_text_secondary)
+            val likeColor = if (post.liked) activeColor else inactiveColor
+            binding.ivPostLikeIcon.setImageResource(
+                if (post.liked) {
+                    R.drawable.ic_like_filled
+                } else {
+                    R.drawable.ic_like_outline
+                }
+            )
+            binding.ivPostLikeIcon.imageTintList = ColorStateList.valueOf(likeColor)
+            binding.tvPostLikeCount.setTextColor(likeColor)
         }
 
         private fun formatContentPreview(contentPreview: String): String {
@@ -108,13 +171,6 @@ class ForumPostAdapter : ListAdapter<ForumPost, ForumPostAdapter.PostViewHolder>
             return collapsed.append(ELLIPSIS).toString()
         }
 
-        private fun resolveImageUrl(imageUrl: String): String {
-            return if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://")) {
-                imageUrl
-            } else {
-                NetworkConfig.BASE_URL.trimEnd('/') + "/" + imageUrl.trimStart('/')
-            }
-        }
     }
 
     private companion object {

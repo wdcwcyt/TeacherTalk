@@ -68,7 +68,6 @@ class CreatePostActivity : BaseActivity<ActivityCreatePostBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setViewHeightToStatusBar(binding.statusBarSpacer)
         applyPageImeInsets()
         restoreSelectedImages(savedInstanceState)
 
@@ -113,17 +112,18 @@ class CreatePostActivity : BaseActivity<ActivityCreatePostBinding>() {
         val contentView = window.decorView.findViewById<View>(Window.ID_ANDROID_CONTENT)
             ?: return
         ViewCompat.setOnApplyWindowInsetsListener(contentView) { view, insets ->
-            val systemBarBottom = insets.getInsets(
-                WindowInsetsCompat.Type.systemBars()
-            ).bottom
+            val safeAreaInsets = insets.getInsets(
+                WindowInsetsCompat.Type.systemBars() or
+                    WindowInsetsCompat.Type.displayCutout()
+            )
             val imeBottom = insets.getInsets(
                 WindowInsetsCompat.Type.ime()
             ).bottom
             view.setPadding(
-                view.paddingLeft,
-                view.paddingTop,
-                view.paddingRight,
-                maxOf(systemBarBottom, imeBottom)
+                safeAreaInsets.left,
+                safeAreaInsets.top,
+                safeAreaInsets.right,
+                maxOf(safeAreaInsets.bottom, imeBottom)
             )
             insets
         }

@@ -3,6 +3,7 @@ package com.zl.teachertalk.net
 import com.zl.teachertalk.bean.ApiResponse
 import com.zl.teachertalk.bean.CreatedPost
 import com.zl.teachertalk.bean.ForumPage
+import com.zl.teachertalk.bean.ForumPostDetail
 import com.zl.teachertalk.bean.PostCreateRequest
 import com.zl.teachertalk.bean.UploadedImage
 import java.io.File
@@ -34,6 +35,18 @@ class ForumRepository(
     suspend fun loadPosts(page: Int, size: Int): ForumPage {
         return withContext(Dispatchers.IO) {
             apiService.getPosts(page = page, size = size).requireData()
+        }
+    }
+
+    /**
+     * 获取帖子详情。
+     *
+     * @param postId 帖子编号
+     * @return 完整帖子详情
+     */
+    suspend fun loadPostDetail(postId: Long): ForumPostDetail {
+        return withContext(Dispatchers.IO) {
+            apiService.getPostDetail(postId).requireData()
         }
     }
 

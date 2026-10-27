@@ -59,3 +59,12 @@ data class AuthResult(
     override fun toString(): String =
         "AuthResult(user=${user.id}, token=***)"
 }
+
+/**
+ * 当前用户头像的更新结果。
+ *
+ * @param avatarUrl 头像相对地址；没有头像时为 null
+ */
+data class AvatarResponse(
+    val avatarUrl: String?
+)

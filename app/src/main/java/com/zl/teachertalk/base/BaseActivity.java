@@ -17,6 +17,7 @@ import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.viewbinding.ViewBinding;
+import com.zl.teachertalk.R;
 
 public abstract class BaseActivity<VB extends ViewBinding> extends AppCompatActivity {
 
@@ -47,16 +48,22 @@ public abstract class BaseActivity<VB extends ViewBinding> extends AppCompatActi
         Window window = activity.getWindow();
         WindowCompat.setDecorFitsSystemWindows(window, false);
         window.setStatusBarColor(Color.TRANSPARENT);
+        // 状态栏区域的空白由白色窗口背景填充，避免不同页面顶部出现灰色或透明断层。
+        window.getDecorView().setBackgroundColor(activity.getColor(R.color.main_surface));
         WindowInsetsControllerCompat controller =
                 WindowCompat.getInsetsController(window, window.getDecorView());
         controller.setAppearanceLightStatusBars(isLightStatusBar);
 
         View contentView = findViewById(Window.ID_ANDROID_CONTENT);
         ViewCompat.setOnApplyWindowInsetsListener(contentView, (v, insets) -> {
-            // 只获取底部导航栏高度
-            int bottom = insets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom;
-            // 只设置底部padding，顶部0，不遮挡沉浸式
-            v.setPadding(0, 0, 0, bottom);
+            // 同时避让状态栏、导航栏和刘海 / 挖孔区域，横屏侧边安全区也会生效。
+            int safeAreaInsetsType = WindowInsetsCompat.Type.systemBars()
+                    | WindowInsetsCompat.Type.displayCutout();
+            int left = insets.getInsets(safeAreaInsetsType).left;
+            int top = insets.getInsets(safeAreaInsetsType).top;
+            int right = insets.getInsets(safeAreaInsetsType).right;
+            int bottom = insets.getInsets(safeAreaInsetsType).bottom;
+            v.setPadding(left, top, right, bottom);
             return insets.consumeSystemWindowInsets();
         });
 

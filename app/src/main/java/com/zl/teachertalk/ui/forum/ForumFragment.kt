@@ -23,7 +23,19 @@ import com.zl.teachertalk.model.forum.ForumViewModel
  */
 class ForumFragment : BaseFragment<FragmentForumBinding>() {
 
-    private val postAdapter = ForumPostAdapter()
+    private var isOpeningDetail = false
+
+    private val postAdapter = ForumPostAdapter { postId ->
+        if (!isOpeningDetail) {
+            isOpeningDetail = true
+            startActivity(
+                ForumPostDetailActivity.createIntent(
+                    context = requireContext(),
+                    postId = postId
+                )
+            )
+        }
+    }
 
     private val viewModel: ForumViewModel by lazy {
         ViewModelProvider(
@@ -85,6 +97,7 @@ class ForumFragment : BaseFragment<FragmentForumBinding>() {
 
     override fun onResume() {
         super.onResume()
+        isOpeningDetail = false
         viewModel.refreshIfStale()
     }
 
