@@ -41,6 +41,22 @@
     <string name="main_add_pending">发布功能将在后续接入</string>
     <string name="main_placeholder_description">页面内容将在后续完善</string>
 
+    <!-- 订单列表 -->
+    <string name="order_list_description">家教需求列表</string>
+    <string name="order_publish_request">发布需求</string>
+    <string name="order_filter_subject_all">全部学科</string>
+    <string name="order_filter_weekly_time">每周时间</string>
+    <string name="order_price_format">¥%1$s</string>
+    <string name="order_price_unit">/小时</string>
+    <string name="order_meta_dot">·</string>
+    <string name="order_empty_title">暂无订单</string>
+    <string name="order_empty_message">当前没有可接的家教需求，下拉刷新试试。</string>
+    <string name="order_loading">正在加载需求</string>
+    <string name="order_error_title">加载失败</string>
+    <string name="order_error_message">网络开小差了，请稍后再试。</string>
+    <string name="order_retry">重新加载</string>
+    <string name="order_load_more">上拉加载更多</string>
+
     <!-- 个人信息页 -->
     <string name="profile_avatar">用户头像</string>
     <string name="profile_change_avatar">更换头像</string>
@@ -56,6 +72,10 @@
     <string name="profile_stat_likes">获赞数量</string>
     <string name="profile_my_posts">我的帖子</string>
     <string name="profile_my_favorites">我的收藏</string>
+    <string name="my_posts_empty">还没有发布帖子</string>
+    <string name="my_favorites_empty">还没有收藏帖子</string>
+    <string name="my_posts_load_failed">我的帖子加载失败</string>
+    <string name="my_favorites_load_failed">我的收藏加载失败</string>
     <string name="profile_browsing_history">浏览历史</string>
     <string name="profile_message_notification">消息通知</string>
     <string name="profile_account_security">账号与安全</string>
@@ -76,6 +96,7 @@
     <string name="forum_retry">重新加载</string>
     <string name="forum_refresh_failed">刷新失败，请稍后重试</string>
     <string name="forum_load_more_failed">加载更多失败，请下拉刷新后重试</string>
+    <string name="post_collection_empty">暂无内容</string>
     <string name="forum_post_unknown_author">匿名用户</string>
     <string name="forum_post_comment_count">评论数：%1$d</string>
     <string name="forum_post_like_count">点赞数：%1$d</string>
@@ -84,22 +105,33 @@
     <string name="forum_detail_title">帖子详情</string>
     <string name="forum_detail_share">分享帖子</string>
     <string name="forum_detail_more">更多操作</string>
+    <string name="forum_post_management">帖子管理</string>
+    <string name="forum_post_edit">编辑</string>
+    <string name="forum_post_management_cancel">取消</string>
     <string name="forum_detail_author_avatar">作者头像</string>
     <string name="forum_detail_follow">关注</string>
     <string name="forum_detail_post_image">帖子图片</string>
     <string name="forum_detail_like">点赞</string>
+    <string name="forum_detail_unlike">取消点赞</string>
     <string name="forum_detail_comment">评论</string>
     <string name="forum_detail_favorite">收藏</string>
+    <string name="forum_detail_unfavorite">取消收藏</string>
     <string name="forum_detail_repost">转发</string>
-    <string name="forum_detail_comment_avatar">评论者头像</string>
-    <string name="forum_detail_comment_like">点赞这条评论</string>
     <string name="forum_detail_comment_hint">写评论…</string>
     <string name="forum_detail_send_comment">发送评论</string>
-    <string name="forum_detail_comments_pending">评论列表将在后续接入</string>
+    <string name="forum_comments_empty">还没有评论，来发表第一条吧</string>
+    <string name="forum_comments_load_failed">评论加载失败</string>
+    <string name="forum_comments_retry">重新加载</string>
+    <string name="forum_comments_load_more_failed">加载更多评论失败，请重试</string>
+    <string name="forum_comment_unknown_author">匿名用户</string>
+    <string name="forum_comment_empty_content">请输入评论内容</string>
+    <string name="forum_comment_too_long">评论不能超过 500 个字符</string>
+    <string name="forum_comment_submit_failed">评论发表失败，请重试</string>
     <string name="forum_detail_load_failed">帖子详情加载失败</string>
     <string name="forum_detail_not_found">帖子不存在或已被删除</string>
     <string name="forum_detail_retry">重新加载</string>
-    <string name="forum_detail_feature_pending">该功能将在后续接入</string>
+    <string name="forum_detail_like_failed">点赞操作失败，请重试</string>
+    <string name="forum_detail_favorite_failed">收藏操作失败，请重试</string>
     <string name="forum_detail_image_position">帖子图片 %1$d</string>
     <string name="forum_detail_sample_author">江辰</string>
     <string name="forum_detail_sample_author_meta">2 小时前</string>
@@ -116,14 +148,21 @@
     <string name="forum_detail_sample_comment_author">林深</string>
     <string name="forum_detail_sample_comment_content">网格和留白确实是最容易被忽略的部分。</string>
     <string name="forum_detail_sample_comment_time">12 分钟前</string>
-    <string name="forum_detail_sample_comment_like_count">24</string>
 
     <!-- 发布帖子 -->
     <string name="post_page_title">发布帖子</string>
+    <string name="post_edit_page_title">编辑帖子</string>
     <string name="post_back">返回</string>
     <string name="post_publish">发布</string>
     <string name="post_publishing">发布中…</string>
     <string name="post_publish_succeeded">发布成功</string>
+    <string name="post_save">保存</string>
+    <string name="post_saving">保存中…</string>
+    <string name="post_save_succeeded">保存成功</string>
+    <string name="post_save_failed">帖子保存失败，请重试</string>
+    <string name="post_edit_load_failed">帖子内容加载失败，请重试</string>
+    <string name="post_no_permission">你没有权限编辑这篇帖子</string>
+    <string name="post_load_retry">重新加载</string>
     <string name="post_title_hint">请输入标题（可选）</string>
     <string name="post_content_hint">分享你的想法…</string>
     <string name="post_add_image">添加图片</string>

@@ -22,6 +22,10 @@
     <color name="main_tab_inactive">#FF858C99</color>
     <color name="main_divider">#FFE9ECF2</color>
     <color name="main_placeholder_icon_background">#FFEAF0FF</color>
+    <color name="order_text_tertiary">#FF9AA2AE</color>
+    <color name="order_skeleton">#FFEEF1F5</color>
+    <color name="order_ripple">#1F3264ED</color>
+    <color name="order_primary_button_ripple">#33FFFFFF</color>
     <color name="post_publish_light">#FFBFDDFF</color>
     <color name="post_publish_light_ripple">#3320242C</color>
     <color name="post_action_delete">#FFD93F3F</color>

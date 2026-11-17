@@ -36,7 +36,7 @@
             android:maxLines="1"
             android:textColor="@color/forum_detail_text_primary"
             android:textSize="@dimen/forum_detail_comment_name_text_size"
-            app:layout_constraintEnd_toStartOf="@id/btnCommentLike"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/ivCommentAvatar"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="@string/forum_detail_sample_comment_author" />
@@ -49,7 +49,7 @@
             android:lineSpacingExtra="@dimen/forum_detail_comment_content_line_spacing"
             android:textColor="@color/forum_detail_text_secondary"
             android:textSize="@dimen/forum_detail_comment_content_text_size"
-            app:layout_constraintEnd_toStartOf="@id/btnCommentLike"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/tvCommentAuthor"
             app:layout_constraintTop_toBottomOf="@id/tvCommentAuthor"
             tools:text="@string/forum_detail_sample_comment_content" />
@@ -62,54 +62,11 @@
             android:textColor="@color/forum_detail_text_tertiary"
             android:textSize="@dimen/forum_detail_comment_time_text_size"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/btnCommentLike"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/tvCommentAuthor"
             app:layout_constraintTop_toBottomOf="@id/tvCommentContent"
             tools:text="@string/forum_detail_sample_comment_time" />
 
-        <FrameLayout
-            android:id="@+id/btnCommentLike"
-            android:layout_width="@dimen/forum_detail_comment_like_touch_size"
-            android:layout_height="@dimen/forum_detail_comment_like_touch_size"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:clickable="true"
-            android:contentDescription="@string/forum_detail_comment_like"
-            android:focusable="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center_vertical"
-                android:importantForAccessibility="no"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="@dimen/forum_detail_comment_like_icon_size"
-                    android:layout_height="@dimen/forum_detail_comment_like_icon_size"
-                    android:importantForAccessibility="no"
-                    android:src="@drawable/ic_like_outline"
-                    app:tint="@color/forum_detail_text_tertiary" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/forum_detail_comment_like_gap"
-                    android:textColor="@color/forum_detail_text_tertiary"
-                    android:textSize="@dimen/forum_detail_comment_like_text_size"
-                    tools:text="@string/forum_detail_sample_comment_like_count" />
-            </LinearLayout>
-        </FrameLayout>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <View
-        android:id="@+id/viewCommentDivider"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/forum_detail_divider_height"
-        android:background="@color/forum_detail_divider"
-        android:importantForAccessibility="no" />
 
 </LinearLayout>

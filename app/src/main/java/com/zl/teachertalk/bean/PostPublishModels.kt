@@ -25,10 +25,32 @@ data class PostCreateRequest(
 )
 
 /**
+ * 编辑帖子请求。
+ *
+ * @param title 编辑后的标题；没有标题时为 null
+ * @param content 编辑后的正文
+ * @param imageUrls 编辑后的完整原图地址列表，按展示顺序排列
+ */
+data class PostUpdateRequest(
+    val title: String?,
+    val content: String,
+    val imageUrls: List<String>
+)
+
+/**
  * 发布帖子成功后的最小返回数据。
  *
  * @param id 新帖子编号
  */
 data class CreatedPost(
+    val id: Long
+)
+
+/**
+ * 编辑帖子成功后的最小返回数据。
+ *
+ * @param id 帖子编号
+ */
+data class UpdatedPost(
     val id: Long
 )

@@ -1,50 +1,341 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/main_page_background"
-    android:paddingStart="@dimen/main_placeholder_horizontal_padding"
-    android:paddingEnd="@dimen/main_placeholder_horizontal_padding">
+    tools:context=".ui.order.OrderFragment">
 
     <LinearLayout
+        android:id="@+id/orderHeader"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical"
+        android:layout_height="@dimen/order_header_height"
+        android:background="@color/main_surface"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/order_header_horizontal_padding"
+        android:paddingEnd="@dimen/order_header_horizontal_padding"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_max="@dimen/order_content_max_width">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/main_order"
+                android:textColor="@color/main_text_primary"
+                android:textSize="@dimen/order_header_title_text_size"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/btnPublishRequest"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/order_publish_min_height"
+                android:background="@drawable/bg_order_publish_button"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:minWidth="@dimen/order_publish_min_height"
+                android:paddingStart="@dimen/order_publish_horizontal_padding"
+                android:paddingEnd="@dimen/order_publish_horizontal_padding"
+                android:text="@string/order_publish_request"
+                android:textColor="@color/main_primary"
+                android:textSize="@dimen/order_publish_text_size" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/orderFilterBar"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/order_filter_bar_height"
+        android:background="@color/main_surface"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/order_header_horizontal_padding"
+        android:paddingTop="@dimen/order_filter_bar_vertical_padding"
+        android:paddingEnd="@dimen/order_header_horizontal_padding"
+        android:paddingBottom="@dimen/order_filter_bar_vertical_padding"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/orderHeader"
+        app:layout_constraintWidth_max="@dimen/order_content_max_width">
+
+            <TextView
+                android:id="@+id/btnFilterSubject"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/bg_order_filter_button"
+                android:clickable="true"
+                android:drawableEnd="@drawable/ic_order_chevron_down"
+                android:drawablePadding="@dimen/order_filter_icon_padding"
+                android:drawableTint="@color/main_text_secondary"
+                android:ellipsize="end"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:minHeight="@dimen/order_filter_min_height"
+                android:paddingStart="@dimen/order_filter_horizontal_padding"
+                android:paddingEnd="@dimen/order_filter_horizontal_padding"
+                android:text="@string/order_filter_subject_all"
+                android:textColor="@color/main_text_primary"
+                android:textSize="@dimen/order_filter_text_size" />
+
+            <TextView
+                android:id="@+id/btnFilterWeeklyTime"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/order_filter_gap"
+                android:layout_weight="1"
+                android:background="@drawable/bg_order_filter_button"
+                android:clickable="true"
+                android:drawableEnd="@drawable/ic_order_chevron_down"
+                android:drawablePadding="@dimen/order_filter_icon_padding"
+                android:drawableTint="@color/main_text_secondary"
+                android:ellipsize="end"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:minHeight="@dimen/order_filter_min_height"
+                android:paddingStart="@dimen/order_filter_horizontal_padding"
+                android:paddingEnd="@dimen/order_filter_horizontal_padding"
+                android:text="@string/order_filter_weekly_time"
+                android:textColor="@color/main_text_secondary"
+                android:textSize="@dimen/order_filter_text_size" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/orderFilterDivider"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/main_tab_divider_height"
+        android:background="@color/main_divider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/orderFilterBar"
+        app:layout_constraintWidth_max="@dimen/order_content_max_width" />
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshOrders"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/orderFilterDivider"
+        app:layout_constraintWidth_max="@dimen/order_content_max_width">
 
-        <ImageView
-            android:layout_width="@dimen/main_placeholder_icon_container_size"
-            android:layout_height="@dimen/main_placeholder_icon_container_size"
-            android:background="@drawable/bg_main_placeholder_icon"
-            android:importantForAccessibility="no"
-            android:padding="@dimen/main_placeholder_icon_padding"
-            android:src="@drawable/icon_order"
-            app:tint="@color/main_primary" />
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/main_placeholder_title_top_gap"
-            android:gravity="center"
-            android:text="@string/main_order"
-            android:textColor="@color/main_text_primary"
-            android:textSize="@dimen/main_placeholder_title_text_size"
-            android:textStyle="bold" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvOrders"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:contentDescription="@string/order_list_description"
+                    android:overScrollMode="ifContentScrolls"
+                    android:paddingStart="@dimen/order_list_horizontal_padding"
+                    android:paddingTop="@dimen/order_list_top_padding"
+                    android:paddingEnd="@dimen/order_list_horizontal_padding"
+                    android:paddingBottom="@dimen/order_list_bottom_padding"
+                    tools:itemCount="3"
+                    tools:listitem="@layout/item_order" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/main_placeholder_description_top_gap"
-            android:gravity="center"
-            android:lineSpacingExtra="@dimen/main_placeholder_line_spacing"
-            android:text="@string/main_placeholder_description"
-            android:textColor="@color/main_text_secondary"
-            android:textSize="@dimen/main_placeholder_description_text_size" />
-    </LinearLayout>
+                <androidx.core.widget.NestedScrollView
+                    android:id="@+id/orderStateContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:fillViewport="true"
+                    android:visibility="gone"
+                    tools:visibility="gone">
 
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/ivOrderEmptyIcon"
+                            android:layout_width="@dimen/order_state_icon_container_size"
+                            android:layout_height="@dimen/order_state_icon_container_size"
+                            android:background="@drawable/bg_order_state_icon"
+                            android:importantForAccessibility="no"
+                            android:padding="@dimen/order_state_icon_padding"
+                            android:src="@drawable/icon_order"
+                            app:layout_constraintBottom_toTopOf="@id/tvOrderEmptyTitle"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintVertical_chainStyle="packed"
+                            app:tint="@color/main_primary" />
+
+                        <TextView
+                            android:id="@+id/tvOrderEmptyTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/order_state_title_top_gap"
+                            android:gravity="center"
+                            android:text="@string/order_empty_title"
+                            android:textColor="@color/main_text_primary"
+                            android:textSize="@dimen/order_state_title_text_size"
+                            android:textStyle="bold"
+                            app:layout_constraintBottom_toTopOf="@id/tvOrderEmptyMessage"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/ivOrderEmptyIcon" />
+
+                        <TextView
+                            android:id="@+id/tvOrderEmptyMessage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/order_state_message_top_gap"
+                            android:gravity="center"
+                            android:lineSpacingExtra="@dimen/order_card_line_spacing"
+                            android:maxWidth="@dimen/order_state_message_max_width"
+                            android:text="@string/order_empty_message"
+                            android:textColor="@color/main_text_secondary"
+                            android:textSize="@dimen/order_state_message_text_size"
+                            app:layout_constraintBottom_toTopOf="@id/btnOrderEmptyAction"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tvOrderEmptyTitle" />
+
+                        <TextView
+                            android:id="@+id/btnOrderEmptyAction"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/order_state_action_min_height"
+                            android:layout_marginTop="@dimen/order_state_action_top_gap"
+                            android:background="@drawable/bg_order_primary_button"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:gravity="center"
+                            android:minWidth="@dimen/order_state_action_min_height"
+                            android:paddingStart="@dimen/order_state_action_horizontal_padding"
+                            android:paddingEnd="@dimen/order_state_action_horizontal_padding"
+                            android:text="@string/order_publish_request"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/order_state_action_text_size"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tvOrderEmptyMessage" />
+
+                        <ImageView
+                            android:id="@+id/ivOrderErrorIcon"
+                            android:layout_width="@dimen/order_state_icon_container_size"
+                            android:layout_height="@dimen/order_state_icon_container_size"
+                            android:background="@drawable/bg_order_state_icon"
+                            android:importantForAccessibility="no"
+                            android:padding="@dimen/order_state_icon_padding"
+                            android:src="@drawable/ic_order_error"
+                            android:visibility="gone"
+                            app:layout_constraintBottom_toTopOf="@id/tvOrderErrorTitle"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintVertical_chainStyle="packed"
+                            app:tint="@color/main_primary" />
+
+                        <TextView
+                            android:id="@+id/tvOrderErrorTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/order_state_title_top_gap"
+                            android:gravity="center"
+                            android:text="@string/order_error_title"
+                            android:textColor="@color/main_text_primary"
+                            android:textSize="@dimen/order_state_title_text_size"
+                            android:textStyle="bold"
+                            android:visibility="gone"
+                            app:layout_constraintBottom_toTopOf="@id/tvOrderErrorMessage"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/ivOrderErrorIcon" />
+
+                        <TextView
+                            android:id="@+id/tvOrderErrorMessage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/order_state_message_top_gap"
+                            android:gravity="center"
+                            android:lineSpacingExtra="@dimen/order_card_line_spacing"
+                            android:maxWidth="@dimen/order_state_message_max_width"
+                            android:text="@string/order_error_message"
+                            android:textColor="@color/main_text_secondary"
+                            android:textSize="@dimen/order_state_message_text_size"
+                            android:visibility="gone"
+                            app:layout_constraintBottom_toTopOf="@id/btnOrderRetry"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tvOrderErrorTitle" />
+
+                        <TextView
+                            android:id="@+id/btnOrderRetry"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/order_state_action_min_height"
+                            android:layout_marginTop="@dimen/order_state_action_top_gap"
+                            android:background="@drawable/bg_order_primary_button"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:gravity="center"
+                            android:minWidth="@dimen/order_state_action_min_height"
+                            android:paddingStart="@dimen/order_state_action_horizontal_padding"
+                            android:paddingEnd="@dimen/order_state_action_horizontal_padding"
+                            android:text="@string/order_retry"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/order_state_action_text_size"
+                            android:visibility="gone"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tvOrderErrorMessage" />
+
+                        <androidx.constraintlayout.widget.Group
+                            android:id="@+id/layoutOrderEmptyState"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:constraint_referenced_ids="ivOrderEmptyIcon,tvOrderEmptyTitle,tvOrderEmptyMessage,btnOrderEmptyAction" />
+
+                        <androidx.constraintlayout.widget.Group
+                            android:id="@+id/layoutOrderErrorState"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            app:constraint_referenced_ids="ivOrderErrorIcon,tvOrderErrorTitle,tvOrderErrorMessage,btnOrderRetry" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.core.widget.NestedScrollView>
+
+                <LinearLayout
+                    android:id="@+id/layoutOrderLoadingState"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    android:contentDescription="@string/order_loading"
+                    android:orientation="vertical"
+                    android:paddingStart="@dimen/order_loading_horizontal_padding"
+                    android:paddingTop="@dimen/order_loading_top_padding"
+                    android:paddingEnd="@dimen/order_loading_horizontal_padding"
+                    android:visibility="gone">
+
+                    <include
+                        layout="@layout/view_order_skeleton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <include
+                        layout="@layout/view_order_skeleton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <include
+                        layout="@layout/view_order_skeleton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </FrameLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

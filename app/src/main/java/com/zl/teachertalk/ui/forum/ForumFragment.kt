@@ -1,10 +1,13 @@
 package com.zl.teachertalk.ui.forum
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,6 +20,7 @@ import com.zl.teachertalk.bean.ForumLoadError
 import com.zl.teachertalk.bean.ForumUiState
 import com.zl.teachertalk.databinding.FragmentForumBinding
 import com.zl.teachertalk.model.forum.ForumViewModel
+import com.zl.teachertalk.ui.auth.LoginActivity
 
 /**
  * 论坛列表页：展示帖子列表，并处理手动刷新、自动刷新和分页预加载。
@@ -25,10 +29,19 @@ class ForumFragment : BaseFragment<FragmentForumBinding>() {
 
     private var isOpeningDetail = false
 
+    private val postDetailLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        isOpeningDetail = false
+        if (result.resultCode == Activity.RESULT_OK) {
+            viewModel.refreshManually()
+        }
+    }
+
     private val postAdapter = ForumPostAdapter { postId ->
         if (!isOpeningDetail) {
             isOpeningDetail = true
-            startActivity(
+            postDetailLauncher.launch(
                 ForumPostDetailActivity.createIntent(
                     context = requireContext(),
                     postId = postId
@@ -40,7 +53,10 @@ class ForumFragment : BaseFragment<FragmentForumBinding>() {
     private val viewModel: ForumViewModel by lazy {
         ViewModelProvider(
             this,
-            ForumViewModel.factory(requireContext().appContainer.forumRepository)
+            ForumViewModel.factory(
+                forumRepository = requireContext().appContainer.forumRepository,
+                sessionManager = requireContext().appContainer.sessionManager
+            )
         )[ForumViewModel::class.java]
     }
 
@@ -91,6 +107,11 @@ class ForumFragment : BaseFragment<FragmentForumBinding>() {
                 ForumLoadError.LOAD_MORE_FAILED -> R.string.forum_load_more_failed
             }
             Toast.makeText(requireContext(), messageRes, Toast.LENGTH_SHORT).show()
+        }
+        viewModel.loginRequiredEvents.observe(viewLifecycleOwner) { event ->
+            if (event.getContentIfNotHandled() != null) {
+                openLoginAndClearTask()
+            }
         }
         viewModel.refreshIfStale()
     }
@@ -148,5 +169,14 @@ class ForumFragment : BaseFragment<FragmentForumBinding>() {
         if (lastVisiblePosition >= itemCount - ForumViewModel.PREFETCH_DISTANCE) {
             viewModel.loadNextPage()
         }
+    }
+
+    private fun openLoginAndClearTask() {
+        startActivity(
+            Intent(requireContext(), LoginActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
+        )
+        requireActivity().finish()
     }
 }

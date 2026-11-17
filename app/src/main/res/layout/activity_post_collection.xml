@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/main_page_background">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/postCollectionHeader"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/post_collection_header_height"
+        android:background="@color/main_surface"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="@dimen/post_collection_back_button_size"
+            android:layout_height="@dimen/post_collection_back_button_size"
+            android:layout_marginStart="@dimen/post_collection_header_horizontal_padding"
+            android:background="@android:color/transparent"
+            android:clickable="true"
+            android:contentDescription="@string/post_back"
+            android:focusable="true"
+            android:padding="@dimen/post_collection_back_icon_padding"
+            android:src="@drawable/ic_back"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/main_text_primary" />
+
+        <TextView
+            android:id="@+id/tvPageTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/post_collection_title_side_clearance"
+            android:layout_marginEnd="@dimen/post_collection_title_side_clearance"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:maxLines="1"
+            android:textColor="@color/main_text_primary"
+            android:textSize="@dimen/post_collection_title_text_size"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@string/profile_my_posts" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:id="@+id/headerDivider"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/main_tab_divider_height"
+        android:background="@color/main_divider"
+        android:importantForAccessibility="no"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/postCollectionHeader" />
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefresh"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerDivider">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvPosts"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:overScrollMode="ifContentScrolls"
+            android:paddingStart="@dimen/forum_list_horizontal_padding"
+            android:paddingTop="@dimen/forum_list_top_padding"
+            android:paddingEnd="@dimen/forum_list_horizontal_padding"
+            android:paddingBottom="@dimen/forum_list_bottom_padding"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:itemCount="3"
+            tools:listitem="@layout/item_forum_post" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <LinearLayout
+        android:id="@+id/stateContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/forum_state_horizontal_margin"
+        android:layout_marginEnd="@dimen/forum_state_horizontal_margin"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerDivider">
+
+        <TextView
+            android:id="@+id/tvStateMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/post_collection_empty"
+            android:textColor="@color/main_text_secondary"
+            android:textSize="@dimen/forum_state_text_size" />
+
+        <TextView
+            android:id="@+id/btnRetry"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/forum_retry_min_height"
+            android:layout_marginTop="@dimen/forum_retry_top_margin"
+            android:background="@android:color/transparent"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:minWidth="@dimen/forum_retry_min_width"
+            android:paddingStart="@dimen/forum_retry_horizontal_padding"
+            android:paddingEnd="@dimen/forum_retry_horizontal_padding"
+            android:text="@string/forum_retry"
+            android:textColor="@color/main_primary"
+            android:textSize="@dimen/forum_retry_text_size"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progressInitial"
+        android:layout_width="@dimen/forum_loading_progress_size"
+        android:layout_height="@dimen/forum_loading_progress_size"
+        android:indeterminateTint="@color/main_primary"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerDivider" />
+
+    <ProgressBar
+        android:id="@+id/progressLoadMore"
+        android:layout_width="@dimen/forum_load_more_progress_size"
+        android:layout_height="@dimen/forum_load_more_progress_size"
+        android:layout_marginBottom="@dimen/forum_load_more_progress_margin"
+        android:indeterminateTint="@color/main_primary"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

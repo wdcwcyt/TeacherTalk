@@ -25,7 +25,7 @@
                 android:layout_width="@dimen/forum_detail_icon_button_size"
                 android:layout_height="@dimen/forum_detail_icon_button_size"
                 android:layout_marginStart="@dimen/forum_detail_page_horizontal_margin"
-                android:background="?attr/selectableItemBackgroundBorderless"
+                android:background="@android:color/transparent"
                 android:clickable="true"
                 android:contentDescription="@string/post_back"
                 android:focusable="true"
@@ -58,7 +58,7 @@
                 android:id="@+id/btnShare"
                 android:layout_width="@dimen/forum_detail_icon_button_size"
                 android:layout_height="@dimen/forum_detail_icon_button_size"
-                android:background="?attr/selectableItemBackgroundBorderless"
+                android:background="@android:color/transparent"
                 android:clickable="true"
                 android:contentDescription="@string/forum_detail_share"
                 android:focusable="true"
@@ -74,7 +74,7 @@
                 android:layout_width="@dimen/forum_detail_icon_button_size"
                 android:layout_height="@dimen/forum_detail_icon_button_size"
                 android:layout_marginEnd="@dimen/forum_detail_page_horizontal_margin"
-                android:background="?attr/selectableItemBackgroundBorderless"
+                android:background="@android:color/transparent"
                 android:clickable="true"
                 android:contentDescription="@string/forum_detail_more"
                 android:focusable="true"
@@ -156,7 +156,6 @@
                 android:clickable="true"
                 android:contentDescription="@string/forum_detail_follow"
                 android:focusable="true"
-                android:foreground="?attr/selectableItemBackgroundBorderless"
                 android:minWidth="@dimen/forum_detail_follow_touch_min_width"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -463,7 +462,6 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:background="?attr/selectableItemBackground"
                         android:clickable="true"
                         android:contentDescription="@string/forum_detail_like"
                         android:focusable="true"
@@ -493,7 +491,6 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:background="?attr/selectableItemBackground"
                         android:clickable="true"
                         android:contentDescription="@string/forum_detail_comment"
                         android:focusable="true"
@@ -523,7 +520,6 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:background="?attr/selectableItemBackground"
                         android:clickable="true"
                         android:contentDescription="@string/forum_detail_favorite"
                         android:focusable="true"
@@ -553,7 +549,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:background="?attr/selectableItemBackground"
+                        android:background="@android:color/transparent"
                         android:clickable="true"
                         android:contentDescription="@string/forum_detail_repost"
                         android:focusable="true"
@@ -633,6 +629,53 @@
                         android:background="@color/forum_detail_divider"
                         android:importantForAccessibility="no" />
 
+                    <ProgressBar
+                        android:id="@+id/progressComments"
+                        android:layout_width="@dimen/forum_loading_progress_size"
+                        android:layout_height="@dimen/forum_loading_progress_size"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="@dimen/forum_detail_comment_item_vertical_padding"
+                        android:indeterminateTint="@color/forum_detail_accent"
+                        android:visibility="gone" />
+
+                    <LinearLayout
+                        android:id="@+id/layoutCommentsState"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:paddingStart="@dimen/forum_detail_comment_horizontal_padding"
+                        android:paddingTop="@dimen/forum_detail_comment_item_vertical_padding"
+                        android:paddingEnd="@dimen/forum_detail_comment_horizontal_padding"
+                        android:paddingBottom="@dimen/forum_detail_comment_item_vertical_padding"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/tvCommentsState"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:textColor="@color/forum_detail_text_tertiary"
+                            android:textSize="@dimen/forum_detail_comment_content_text_size" />
+
+                        <TextView
+                            android:id="@+id/btnRetryComments"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/forum_retry_min_height"
+                            android:layout_marginTop="@dimen/forum_retry_top_margin"
+                            android:background="@android:color/transparent"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:gravity="center"
+                            android:minWidth="@dimen/forum_retry_min_width"
+                            android:paddingStart="@dimen/forum_retry_horizontal_padding"
+                            android:paddingEnd="@dimen/forum_retry_horizontal_padding"
+                            android:text="@string/forum_comments_retry"
+                            android:textColor="@color/forum_detail_accent_text"
+                            android:textSize="@dimen/forum_retry_text_size"
+                            android:visibility="gone" />
+                    </LinearLayout>
+
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rvComments"
                         android:layout_width="match_parent"
@@ -645,19 +688,15 @@
                         tools:listitem="@layout/item_comment"
                         tools:visibility="visible" />
 
-                    <TextView
-                        android:id="@+id/tvCommentsPending"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingStart="@dimen/forum_detail_comment_horizontal_padding"
-                        android:paddingTop="@dimen/forum_detail_comment_item_vertical_padding"
-                        android:paddingEnd="@dimen/forum_detail_comment_horizontal_padding"
-                        android:paddingBottom="@dimen/forum_detail_comment_item_vertical_padding"
-                        android:text="@string/forum_detail_comments_pending"
-                        android:textColor="@color/forum_detail_text_tertiary"
-                        android:textSize="@dimen/forum_detail_comment_content_text_size"
-                        android:visibility="visible"
-                        tools:visibility="gone" />
+                    <ProgressBar
+                        android:id="@+id/progressCommentsLoadMore"
+                        android:layout_width="@dimen/forum_load_more_progress_size"
+                        android:layout_height="@dimen/forum_load_more_progress_size"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="@dimen/forum_load_more_progress_margin"
+                        android:layout_marginBottom="@dimen/forum_load_more_progress_margin"
+                        android:indeterminateTint="@color/forum_detail_accent"
+                        android:visibility="gone" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
@@ -702,7 +741,7 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/forum_retry_min_height"
             android:layout_marginTop="@dimen/forum_retry_top_margin"
-            android:background="?attr/selectableItemBackground"
+            android:background="@android:color/transparent"
             android:clickable="true"
             android:focusable="true"
             android:gravity="center"
@@ -740,9 +779,11 @@
             android:layout_marginStart="@dimen/forum_detail_page_horizontal_margin"
             android:layout_marginEnd="@dimen/forum_detail_send_field_gap"
             android:background="@drawable/bg_forum_detail_comment_input"
+            android:enabled="false"
             android:hint="@string/forum_detail_comment_hint"
             android:imeOptions="actionSend"
             android:inputType="textCapSentences"
+            android:maxLength="500"
             android:maxLines="1"
             android:minHeight="@dimen/forum_detail_field_height"
             android:paddingStart="@dimen/forum_detail_field_horizontal_padding"
@@ -761,9 +802,10 @@
             android:layout_width="@dimen/forum_detail_send_touch_size"
             android:layout_height="@dimen/forum_detail_send_touch_size"
             android:layout_marginEnd="@dimen/forum_detail_send_touch_end_margin"
-            android:background="?attr/selectableItemBackgroundBorderless"
+            android:background="@android:color/transparent"
             android:clickable="true"
             android:contentDescription="@string/forum_detail_send_comment"
+            android:enabled="false"
             android:focusable="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

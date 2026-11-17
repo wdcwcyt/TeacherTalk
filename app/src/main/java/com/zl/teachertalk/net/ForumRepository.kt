@@ -1,11 +1,18 @@
 package com.zl.teachertalk.net
 
 import com.zl.teachertalk.bean.ApiResponse
+import com.zl.teachertalk.bean.CommentCreateRequest
 import com.zl.teachertalk.bean.CreatedPost
+import com.zl.teachertalk.bean.ForumComment
+import com.zl.teachertalk.bean.ForumCommentPage
 import com.zl.teachertalk.bean.ForumPage
 import com.zl.teachertalk.bean.ForumPostDetail
+import com.zl.teachertalk.bean.FavoriteState
+import com.zl.teachertalk.bean.LikeState
 import com.zl.teachertalk.bean.PostCreateRequest
+import com.zl.teachertalk.bean.PostUpdateRequest
 import com.zl.teachertalk.bean.UploadedImage
+import com.zl.teachertalk.bean.UpdatedPost
 import java.io.File
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -17,7 +24,7 @@ import retrofit2.Response
 /**
  * 论坛数据仓库。
  *
- * 负责帖子分页、图片上传和带图发帖接口。
+ * 负责帖子分页、详情、点赞收藏、评论、图片上传和带图发帖接口。
  *
  * @param apiService 论坛与文件接口
  */
@@ -39,6 +46,32 @@ class ForumRepository(
     }
 
     /**
+     * 加载一页当前用户发布的帖子。
+     *
+     * @param page 页码，从 1 开始
+     * @param size 每页数量
+     * @return 帖子分页结果
+     */
+    suspend fun loadMyPosts(page: Int, size: Int): ForumPage {
+        return withContext(Dispatchers.IO) {
+            apiService.getMyPosts(page = page, size = size).requireData()
+        }
+    }
+
+    /**
+     * 加载一页当前用户收藏的帖子。
+     *
+     * @param page 页码，从 1 开始
+     * @param size 每页数量
+     * @return 帖子分页结果
+     */
+    suspend fun loadFavoritePosts(page: Int, size: Int): ForumPage {
+        return withContext(Dispatchers.IO) {
+            apiService.getFavoritePosts(page = page, size = size).requireData()
+        }
+    }
+
+    /**
      * 获取帖子详情。
      *
      * @param postId 帖子编号
@@ -47,6 +80,92 @@ class ForumRepository(
     suspend fun loadPostDetail(postId: Long): ForumPostDetail {
         return withContext(Dispatchers.IO) {
             apiService.getPostDetail(postId).requireData()
+        }
+    }
+
+    /**
+     * 点赞帖子。
+     *
+     * @param postId 帖子编号
+     * @return 点赞后的最新状态
+     */
+    suspend fun likePost(postId: Long): LikeState {
+        return withContext(Dispatchers.IO) {
+            apiService.likePost(postId).requireData()
+        }
+    }
+
+    /**
+     * 取消点赞帖子。
+     *
+     * @param postId 帖子编号
+     * @return 取消点赞后的最新状态
+     */
+    suspend fun unlikePost(postId: Long): LikeState {
+        return withContext(Dispatchers.IO) {
+            apiService.unlikePost(postId).requireData()
+        }
+    }
+
+    /**
+     * 收藏帖子。
+     *
+     * @param postId 帖子编号
+     * @return 收藏后的最新状态
+     */
+    suspend fun favoritePost(postId: Long): FavoriteState {
+        return withContext(Dispatchers.IO) {
+            apiService.favoritePost(postId).requireData()
+        }
+    }
+
+    /**
+     * 取消收藏帖子。
+     *
+     * @param postId 帖子编号
+     * @return 取消收藏后的最新状态
+     */
+    suspend fun unfavoritePost(postId: Long): FavoriteState {
+        return withContext(Dispatchers.IO) {
+            apiService.unfavoritePost(postId).requireData()
+        }
+    }
+
+    /**
+     * 加载一页帖子评论。
+     *
+     * @param postId 帖子编号
+     * @param page 页码，从 1 开始
+     * @param size 每页数量
+     * @return 评论分页结果
+     */
+    suspend fun loadComments(
+        postId: Long,
+        page: Int,
+        size: Int
+    ): ForumCommentPage {
+        return withContext(Dispatchers.IO) {
+            apiService.getPostComments(
+                postId = postId,
+                page = page,
+                size = size
+            ).requireData()
+        }
+    }
+
+    /**
+     * 发布帖子评论。
+     *
+     * @param postId 帖子编号
+     * @param content 评论正文
+     * @return 新评论
+     */
+    suspend fun createComment(postId: Long, content: String): ForumComment {
+        return withContext(Dispatchers.IO) {
+            apiService.createPostComment(
+                postId = postId,
+                request = CommentCreateRequest(content)
+            ).requireData()
         }
     }
 
@@ -84,6 +203,33 @@ class ForumRepository(
         return withContext(Dispatchers.IO) {
             apiService.createPost(
                 PostCreateRequest(
+                    title = title,
+                    content = content,
+                    imageUrls = imageUrls
+                )
+            ).requireData()
+        }
+    }
+
+    /**
+     * 编辑自己的帖子，标题、正文和图片按提交内容整体替换。
+     *
+     * @param postId 帖子编号
+     * @param title 编辑后的标题；没有标题时为 null
+     * @param content 编辑后的正文
+     * @param imageUrls 编辑后的完整图片地址列表
+     * @return 帖子编号
+     */
+    suspend fun updatePost(
+        postId: Long,
+        title: String?,
+        content: String,
+        imageUrls: List<String>
+    ): UpdatedPost {
+        return withContext(Dispatchers.IO) {
+            apiService.updatePost(
+                postId = postId,
+                request = PostUpdateRequest(
                     title = title,
                     content = content,
                     imageUrls = imageUrls

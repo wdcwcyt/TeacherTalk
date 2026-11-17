@@ -86,3 +86,25 @@ data class ForumPostDetail(
     val createdAt: String,
     val updatedAt: String
 )
+
+/**
+ * 点赞或取消点赞后的最新状态。
+ *
+ * @param liked 当前用户是否已点赞
+ * @param likeCount 最新点赞数
+ */
+data class LikeState(
+    val liked: Boolean,
+    val likeCount: Int
+)
+
+/**
+ * 收藏或取消收藏后的最新状态。
+ *
+ * @param favorited 当前用户是否已收藏
+ * @param favoriteCount 最新收藏数
+ */
+data class FavoriteState(
+    val favorited: Boolean,
+    val favoriteCount: Int
+)

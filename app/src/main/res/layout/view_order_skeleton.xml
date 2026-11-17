@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/order_loading_card_gap"
+    android:background="@drawable/bg_order_skeleton_card"
+    android:minHeight="@dimen/order_loading_card_min_height"
+    android:orientation="horizontal"
+    android:padding="@dimen/order_loading_card_content_padding">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="@dimen/order_loading_title_width"
+            android:layout_height="@dimen/order_loading_title_height"
+            android:background="@drawable/bg_order_skeleton_bar" />
+
+        <View
+            android:layout_width="@dimen/order_loading_meta_width"
+            android:layout_height="@dimen/order_loading_meta_height"
+            android:layout_marginTop="@dimen/order_loading_meta_top_gap"
+            android:background="@drawable/bg_order_skeleton_bar" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/order_loading_desc_height"
+            android:layout_marginTop="@dimen/order_loading_desc_top_gap"
+            android:background="@drawable/bg_order_skeleton_bar" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="@dimen/order_loading_price_width"
+        android:layout_height="@dimen/order_loading_price_height"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="@dimen/order_card_main_price_gap"
+        android:background="@drawable/bg_order_skeleton_bar" />
+</LinearLayout>

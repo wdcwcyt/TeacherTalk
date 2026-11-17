@@ -1,7 +1,7 @@
 package com.zl.teachertalk.bean
 
 /**
- * 论坛列表页的不可变界面状态。
+ * 帖子列表页的不可变界面状态，可复用于论坛、我的帖子和我的收藏。
  *
  * @param posts 已加载并去重后的帖子
  * @param currentPage 最后一次成功加载的页码

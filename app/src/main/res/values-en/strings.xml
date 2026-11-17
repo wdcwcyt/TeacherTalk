@@ -41,6 +41,22 @@
     <string name="main_add_pending">Publishing will be available in a later update.</string>
     <string name="main_placeholder_description">This page will be completed later.</string>
 
+    <!-- Order list -->
+    <string name="order_list_description">Tutoring requests</string>
+    <string name="order_publish_request">Publish request</string>
+    <string name="order_filter_subject_all">All subjects</string>
+    <string name="order_filter_weekly_time">Weekly time</string>
+    <string name="order_price_format">¥%1$s</string>
+    <string name="order_price_unit">/hr</string>
+    <string name="order_meta_dot">·</string>
+    <string name="order_empty_title">No orders yet</string>
+    <string name="order_empty_message">There are no tutoring requests available right now. Pull down to refresh.</string>
+    <string name="order_loading">Loading tutoring requests</string>
+    <string name="order_error_title">Could not load requests</string>
+    <string name="order_error_message">The network is unavailable. Please try again later.</string>
+    <string name="order_retry">Reload</string>
+    <string name="order_load_more">Pull up to load more</string>
+
     <!-- Profile -->
     <string name="profile_avatar">User avatar</string>
     <string name="profile_change_avatar">Change avatar</string>
@@ -56,6 +72,10 @@
     <string name="profile_stat_likes">Likes received</string>
     <string name="profile_my_posts">My posts</string>
     <string name="profile_my_favorites">My favorites</string>
+    <string name="my_posts_empty">You have not published any posts yet.</string>
+    <string name="my_favorites_empty">You have not favorited any posts yet.</string>
+    <string name="my_posts_load_failed">Failed to load your posts.</string>
+    <string name="my_favorites_load_failed">Failed to load your favorites.</string>
     <string name="profile_browsing_history">Browsing history</string>
     <string name="profile_message_notification">Notifications</string>
     <string name="profile_account_security">Account and security</string>
@@ -76,6 +96,7 @@
     <string name="forum_retry">Reload</string>
     <string name="forum_refresh_failed">Refresh failed. Please try again later.</string>
     <string name="forum_load_more_failed">Failed to load more. Pull to refresh and try again.</string>
+    <string name="post_collection_empty">Nothing here yet</string>
     <string name="forum_post_unknown_author">Unknown user</string>
     <string name="forum_post_comment_count">Comments: %1$d</string>
     <string name="forum_post_like_count">Likes: %1$d</string>
@@ -84,22 +105,33 @@
     <string name="forum_detail_title">Post details</string>
     <string name="forum_detail_share">Share post</string>
     <string name="forum_detail_more">More actions</string>
+    <string name="forum_post_management">Manage post</string>
+    <string name="forum_post_edit">Edit</string>
+    <string name="forum_post_management_cancel">Cancel</string>
     <string name="forum_detail_author_avatar">Author avatar</string>
     <string name="forum_detail_follow">Follow</string>
     <string name="forum_detail_post_image">Post image</string>
     <string name="forum_detail_like">Like</string>
+    <string name="forum_detail_unlike">Unlike</string>
     <string name="forum_detail_comment">Comments</string>
     <string name="forum_detail_favorite">Favorite</string>
+    <string name="forum_detail_unfavorite">Remove from favorites</string>
     <string name="forum_detail_repost">Repost</string>
-    <string name="forum_detail_comment_avatar">Commenter avatar</string>
-    <string name="forum_detail_comment_like">Like this comment</string>
     <string name="forum_detail_comment_hint">Write a comment…</string>
     <string name="forum_detail_send_comment">Send comment</string>
-    <string name="forum_detail_comments_pending">Comments will be available in a later update.</string>
+    <string name="forum_comments_empty">No comments yet. Be the first to comment.</string>
+    <string name="forum_comments_load_failed">Failed to load comments.</string>
+    <string name="forum_comments_retry">Reload</string>
+    <string name="forum_comments_load_more_failed">Failed to load more comments. Try again.</string>
+    <string name="forum_comment_unknown_author">Unknown user</string>
+    <string name="forum_comment_empty_content">Enter a comment.</string>
+    <string name="forum_comment_too_long">Comments cannot exceed 500 characters.</string>
+    <string name="forum_comment_submit_failed">Failed to publish the comment. Try again.</string>
     <string name="forum_detail_load_failed">Failed to load post details.</string>
     <string name="forum_detail_not_found">This post does not exist or has been deleted.</string>
     <string name="forum_detail_retry">Reload</string>
-    <string name="forum_detail_feature_pending">This feature will be available in a later update.</string>
+    <string name="forum_detail_like_failed">Could not update the like. Try again.</string>
+    <string name="forum_detail_favorite_failed">Could not update the favorite. Try again.</string>
     <string name="forum_detail_image_position">Post image %1$d</string>
     <string name="forum_detail_sample_author">Jiang Chen</string>
     <string name="forum_detail_sample_author_meta">2 hours ago</string>
@@ -116,14 +148,21 @@
     <string name="forum_detail_sample_comment_author">Lin Shen</string>
     <string name="forum_detail_sample_comment_content">Grids and white space really are the easiest details to miss.</string>
     <string name="forum_detail_sample_comment_time">12 minutes ago</string>
-    <string name="forum_detail_sample_comment_like_count">24</string>
 
     <!-- Create post -->
     <string name="post_page_title">Create post</string>
+    <string name="post_edit_page_title">Edit post</string>
     <string name="post_back">Back</string>
     <string name="post_publish">Publish</string>
     <string name="post_publishing">Publishing…</string>
     <string name="post_publish_succeeded">Post published</string>
+    <string name="post_save">Save</string>
+    <string name="post_saving">Saving…</string>
+    <string name="post_save_succeeded">Post saved</string>
+    <string name="post_save_failed">Failed to save the post. Try again.</string>
+    <string name="post_edit_load_failed">Failed to load the post. Try again.</string>
+    <string name="post_no_permission">You do not have permission to edit this post.</string>
+    <string name="post_load_retry">Reload</string>
     <string name="post_title_hint">Enter a title (optional)</string>
     <string name="post_content_hint">Share your thoughts…</string>
     <string name="post_add_image">Add images</string>

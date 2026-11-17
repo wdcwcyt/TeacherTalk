@@ -15,12 +15,14 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.zl.teachertalk.R
 import com.zl.teachertalk.appContainer
 import com.zl.teachertalk.base.BaseFragment
+import com.zl.teachertalk.bean.ForumPostSource
 import com.zl.teachertalk.bean.ProfileAvatarError
 import com.zl.teachertalk.bean.ProfileUiState
 import com.zl.teachertalk.databinding.FragmentProfileBinding
 import com.zl.teachertalk.model.profile.ProfileViewModel
 import com.zl.teachertalk.net.NetworkConfig
 import com.zl.teachertalk.ui.auth.LoginActivity
+import com.zl.teachertalk.ui.forum.PostCollectionActivity
 
 /**
  * 我的内容页：展示当前登录用户，并提供退出登录和后续功能占位入口。
@@ -63,10 +65,14 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
         currentBinding.avatarContainer.setOnClickListener {
             openAvatarPicker()
         }
+        currentBinding.rowMyPosts.setOnClickListener {
+            openPostCollection(ForumPostSource.MY_POSTS)
+        }
+        currentBinding.rowMyFavorites.setOnClickListener {
+            openPostCollection(ForumPostSource.FAVORITES)
+        }
         setPendingFeatureClickListener(
             currentBinding.btnEditProfile,
-            currentBinding.rowMyPosts,
-            currentBinding.rowMyFavorites,
             currentBinding.rowBrowsingHistory,
             currentBinding.rowMessageNotification,
             currentBinding.rowAccountSecurity,
@@ -98,6 +104,15 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
             }
         }
         viewModel.loadProfile()
+    }
+
+    private fun openPostCollection(source: ForumPostSource) {
+        startActivity(
+            PostCollectionActivity.createIntent(
+                context = requireContext(),
+                source = source
+            )
+        )
     }
 
     override fun onHiddenChanged(hidden: Boolean) {

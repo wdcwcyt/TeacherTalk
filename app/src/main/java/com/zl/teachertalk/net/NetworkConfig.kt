@@ -10,7 +10,7 @@ object NetworkConfig {
     /**
      * 当前开发电脑在局域网中的后端地址，真机调试时使用。
      */
-    const val BASE_URL = "http://10.191.117.240:8080/"
+    const val BASE_URL = "http://10.155.5.240:8080/"
 
     /**
      * 把服务端返回的相对媒体地址转换成 Glide 可加载的完整地址。

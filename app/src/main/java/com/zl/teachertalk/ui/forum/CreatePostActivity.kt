@@ -1,6 +1,8 @@
 package com.zl.teachertalk.ui.forum
 
 import android.app.Dialog
+import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
@@ -29,28 +31,44 @@ import com.zl.teachertalk.appContainer
 import com.zl.teachertalk.base.BaseActivity
 import com.zl.teachertalk.bean.CreatePostError
 import com.zl.teachertalk.bean.CreatePostUiState
+import com.zl.teachertalk.bean.ForumPostDetail
+import com.zl.teachertalk.bean.PostEditorImage
+import com.zl.teachertalk.bean.PostEditorLoadError
 import com.zl.teachertalk.databinding.ActivityCreatePostBinding
 import com.zl.teachertalk.databinding.DialogImagePreviewBinding
 import com.zl.teachertalk.databinding.DialogPostImageActionsBinding
 import com.zl.teachertalk.model.forum.CreatePostViewModel
+import com.zl.teachertalk.net.NetworkConfig
+import com.zl.teachertalk.ui.auth.LoginActivity
 import com.zl.teachertalk.utils.PostImageCompressor
 
 /**
- * 发布帖子页：提供标题、正文和图片选择入口。
- *
- * 负责选择图片、展示本地预览，并通过 ViewModel 完成压缩、上传和发帖。
+ * 创建和编辑帖子共用页面：维护标题、正文和有序图片草稿。
  */
 class CreatePostActivity : BaseActivity<ActivityCreatePostBinding>() {
 
-    private val selectedImageUris = mutableListOf<Uri>()
+    private val editorImages = mutableListOf<PostEditorImage>()
     private var isSubmitting = false
+    private var isLoadingOriginal = false
+    private var isLoadFailed = false
+    private var hasAppliedOriginal = false
+
+    private val postId: Long? by lazy {
+        intent.getLongExtra(EXTRA_POST_ID, INVALID_POST_ID)
+            .takeIf { it > INVALID_POST_ID }
+    }
+
+    private val isEditMode: Boolean
+        get() = postId != null
 
     private val viewModel: CreatePostViewModel by lazy {
         ViewModelProvider(
             this,
             CreatePostViewModel.factory(
                 forumRepository = appContainer.forumRepository,
-                imageCompressor = appContainer.postImageCompressor
+                imageCompressor = appContainer.postImageCompressor,
+                sessionManager = appContainer.sessionManager,
+                postId = postId
             )
         )[CreatePostViewModel::class.java]
     }
@@ -69,15 +87,24 @@ class CreatePostActivity : BaseActivity<ActivityCreatePostBinding>() {
         super.onCreate(savedInstanceState)
 
         applyPageImeInsets()
-        restoreSelectedImages(savedInstanceState)
+        restoreEditorState(savedInstanceState)
+        isLoadingOriginal = isEditMode
+        binding.tvPageTitle.setText(
+            if (isEditMode) R.string.post_edit_page_title else R.string.post_page_title
+        )
+        binding.scrollEditor.isVisible = !isEditMode
+        binding.progressEditorLoading.isVisible = isEditMode
 
         binding.btnBack.setOnClickListener { finish() }
         binding.btnPublish.setOnClickListener {
-            viewModel.publishPost(
+            viewModel.savePost(
                 title = binding.etTitle.text?.toString().orEmpty(),
                 content = binding.etContent.text?.toString().orEmpty(),
-                imageUris = selectedImageUris.toList()
+                images = editorImages.toList()
             )
+        }
+        binding.btnRetryEditor.setOnClickListener {
+            viewModel.retryLoadOriginalPost()
         }
         binding.btnAddImage.setOnClickListener {
             openImagePicker()
@@ -89,22 +116,134 @@ class CreatePostActivity : BaseActivity<ActivityCreatePostBinding>() {
         updatePublishButtonState()
         renderImageSlots()
         observeViewModel()
+        if (isEditMode) {
+            viewModel.loadOriginalPost()
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putStringArrayList(
+            KEY_EDITOR_IMAGES,
+            ArrayList(
+                editorImages.map { image ->
+                    when (image) {
+                        is PostEditorImage.Existing -> "$IMAGE_TYPE_EXISTING${image.url}"
+                        is PostEditorImage.Local -> "$IMAGE_TYPE_LOCAL${image.uriString}"
+                    }
+                }
+            )
+        )
+        outState.putBoolean(KEY_HAS_APPLIED_ORIGINAL, hasAppliedOriginal)
+        super.onSaveInstanceState(outState)
+    }
+
+    private fun restoreEditorState(savedInstanceState: Bundle?) {
+        if (savedInstanceState == null) return
+        hasAppliedOriginal = savedInstanceState.getBoolean(
+            KEY_HAS_APPLIED_ORIGINAL,
+            false
+        )
+        val savedImages = savedInstanceState.getStringArrayList(KEY_EDITOR_IMAGES)
+            ?: return
+        savedImages
+            .take(MAX_IMAGE_COUNT)
+            .forEach { value ->
+                parseEditorImage(value)?.let(editorImages::add)
+            }
+    }
+
+    private fun parseEditorImage(value: String): PostEditorImage? {
+        return when {
+            value.startsWith(IMAGE_TYPE_EXISTING) -> {
+                PostEditorImage.Existing(value.removePrefix(IMAGE_TYPE_EXISTING))
+            }
+
+            value.startsWith(IMAGE_TYPE_LOCAL) -> {
+                PostEditorImage.Local(value.removePrefix(IMAGE_TYPE_LOCAL))
+            }
+
+            else -> null
+        }
     }
 
     private fun observeViewModel() {
         viewModel.uiState.observe(this) { state ->
-            renderSubmitState(state)
+            renderEditorState(state)
         }
         viewModel.errorEvents.observe(this) { event ->
             val error = event.getContentIfNotHandled() ?: return@observe
             showCreatePostError(error)
         }
-        viewModel.postCreatedEvents.observe(this) { event ->
+        viewModel.postSavedEvents.observe(this) { event ->
             if (event.getContentIfNotHandled() != null) {
-                Toast.makeText(this, R.string.post_publish_succeeded, Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this,
+                    if (isEditMode) {
+                        R.string.post_save_succeeded
+                    } else {
+                        R.string.post_publish_succeeded
+                    },
+                    Toast.LENGTH_SHORT
+                ).show()
                 setResult(RESULT_OK)
                 finish()
             }
+        }
+        viewModel.loginRequiredEvents.observe(this) { event ->
+            if (event.getContentIfNotHandled() != null) {
+                openLoginAndClearTask()
+            }
+        }
+    }
+
+    private fun renderEditorState(state: CreatePostUiState) {
+        isSubmitting = state.isSubmitting
+        isLoadingOriginal = state.isLoadingOriginal
+        isLoadFailed = state.loadError != null
+
+        if (isEditMode && !hasAppliedOriginal && state.originalPost != null) {
+            applyOriginalPost(state.originalPost)
+        }
+
+        binding.progressEditorLoading.isVisible = state.isLoadingOriginal
+        binding.layoutEditorError.isVisible = state.loadError != null
+        binding.scrollEditor.isVisible = !state.isLoadingOriginal && state.loadError == null
+
+        state.loadError?.let { error ->
+            binding.tvEditorErrorMessage.setText(errorMessageRes(error))
+            binding.btnRetryEditor.isVisible = error != PostEditorLoadError.NOT_FOUND &&
+                error != PostEditorLoadError.NO_PERMISSION
+        }
+
+        renderImageSlots()
+        updatePublishButtonState()
+    }
+
+    private fun applyOriginalPost(post: ForumPostDetail) {
+        binding.etTitle.setText(post.title)
+        binding.etContent.setText(post.content)
+        binding.etContent.setSelection(binding.etContent.text.length)
+
+        editorImages.clear()
+        editorImages.addAll(
+            post.imageUrls
+                .asSequence()
+                .map { it.trim() }
+                .filter { it.isNotEmpty() }
+                .take(MAX_IMAGE_COUNT)
+                .map { url -> PostEditorImage.Existing(url) }
+                .toList()
+        )
+        hasAppliedOriginal = true
+    }
+
+    private fun errorMessageRes(error: PostEditorLoadError): Int {
+        return when (error) {
+            PostEditorLoadError.NOT_FOUND -> R.string.forum_detail_not_found
+            PostEditorLoadError.NO_PERMISSION -> R.string.post_no_permission
+            PostEditorLoadError.NETWORK,
+            PostEditorLoadError.SERVER,
+            PostEditorLoadError.UNKNOWN -> R.string.post_edit_load_failed
         }
     }
 
@@ -116,9 +255,7 @@ class CreatePostActivity : BaseActivity<ActivityCreatePostBinding>() {
                 WindowInsetsCompat.Type.systemBars() or
                     WindowInsetsCompat.Type.displayCutout()
             )
-            val imeBottom = insets.getInsets(
-                WindowInsetsCompat.Type.ime()
-            ).bottom
+            val imeBottom = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom
             view.setPadding(
                 safeAreaInsets.left,
                 safeAreaInsets.top,
@@ -130,25 +267,9 @@ class CreatePostActivity : BaseActivity<ActivityCreatePostBinding>() {
         ViewCompat.requestApplyInsets(contentView)
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putStringArrayList(
-            KEY_SELECTED_IMAGE_URIS,
-            ArrayList(selectedImageUris.map { it.toString() })
-        )
-        super.onSaveInstanceState(outState)
-    }
-
-    private fun restoreSelectedImages(savedInstanceState: Bundle?) {
-        val savedUris = savedInstanceState?.getStringArrayList(KEY_SELECTED_IMAGE_URIS)
-            ?: return
-        selectedImageUris.addAll(
-            savedUris.take(MAX_IMAGE_COUNT).map { uri -> Uri.parse(uri) }
-        )
-    }
-
     private fun openImagePicker() {
-        if (isSubmitting) return
-        if (selectedImageUris.size >= MAX_IMAGE_COUNT) {
+        if (isSubmitting || isLoadingOriginal || isLoadFailed) return
+        if (editorImages.size >= MAX_IMAGE_COUNT) {
             showImageLimitMessage()
             return
         }
@@ -158,11 +279,15 @@ class CreatePostActivity : BaseActivity<ActivityCreatePostBinding>() {
     }
 
     private fun addSelectedImages(uris: List<Uri>) {
-        if (uris.isEmpty() || isSubmitting) return
+        if (uris.isEmpty() || isSubmitting || isLoadingOriginal || isLoadFailed) return
 
-        val remainingCount = MAX_IMAGE_COUNT - selectedImageUris.size
+        val remainingCount = MAX_IMAGE_COUNT - editorImages.size
         val acceptedUris = uris.take(remainingCount)
-        selectedImageUris.addAll(acceptedUris)
+        editorImages.addAll(
+            acceptedUris.map { uri ->
+                PostEditorImage.Local(uri.toString())
+            }
+        )
         if (acceptedUris.size < uris.size) {
             showImageLimitMessage()
         }
@@ -184,25 +309,31 @@ class CreatePostActivity : BaseActivity<ActivityCreatePostBinding>() {
             }
             renderImageSlot(
                 imageView = imageView,
-                uri = selectedImageUris.getOrNull(index),
+                image = editorImages.getOrNull(index),
                 position = index
             )
         }
-        binding.ivPostImage4.isVisible = selectedImageUris.size >= 4
-        binding.ivPostImage5.isVisible = selectedImageUris.size >= 5
+        binding.ivPostImage4.isVisible = editorImages.size >= 4
+        binding.ivPostImage5.isVisible = editorImages.size >= 5
 
-        val canAddMore = !isSubmitting && selectedImageUris.size < MAX_IMAGE_COUNT
+        val canAddMore = !isSubmitting &&
+            !isLoadingOriginal &&
+            !isLoadFailed &&
+            editorImages.size < MAX_IMAGE_COUNT
         binding.btnAddImage.isEnabled = canAddMore
         binding.btnAddImage.alpha = if (canAddMore) 1f else DISABLED_ALPHA
     }
 
     private fun renderImageSlot(
         imageView: ShapeableImageView,
-        uri: Uri?,
+        image: PostEditorImage?,
         position: Int
     ) {
-        val hasImage = uri != null
-        val canManageImage = hasImage && !isSubmitting
+        val hasImage = image != null
+        val canManageImage = hasImage &&
+            !isSubmitting &&
+            !isLoadingOriginal &&
+            !isLoadFailed
         imageView.isClickable = canManageImage
         imageView.isFocusable = canManageImage
         imageView.importantForAccessibility = if (hasImage) {
@@ -216,20 +347,34 @@ class CreatePostActivity : BaseActivity<ActivityCreatePostBinding>() {
             null
         }
 
-        if (uri == null) {
+        if (image == null) {
             Glide.with(this).clear(imageView)
             imageView.setImageDrawable(null)
             return
         }
 
+        val model = when (image) {
+            is PostEditorImage.Existing ->
+                NetworkConfig.resolveMediaUrl(image.url)
+
+            is PostEditorImage.Local -> Uri.parse(image.uriString)
+        }
         Glide.with(this)
-            .load(uri)
+            .load(model)
+            .placeholder(R.drawable.bg_post_img_content)
+            .error(R.drawable.bg_post_img_content)
             .centerCrop()
             .into(imageView)
     }
 
     private fun showImageActions(position: Int) {
-        if (isSubmitting || position !in selectedImageUris.indices) return
+        if (isSubmitting ||
+            isLoadingOriginal ||
+            isLoadFailed ||
+            position !in editorImages.indices
+        ) {
+            return
+        }
         val dialog = BottomSheetDialog(this)
         val sheetBinding = DialogPostImageActionsBinding.inflate(layoutInflater)
         dialog.setContentView(sheetBinding.root)
@@ -252,7 +397,7 @@ class CreatePostActivity : BaseActivity<ActivityCreatePostBinding>() {
     }
 
     private fun showImagePreview(startPosition: Int) {
-        val previewImages = selectedImageUris.toList()
+        val previewImages = editorImages.map(::previewUri)
         if (startPosition !in previewImages.indices) return
 
         val previewBinding = DialogImagePreviewBinding.inflate(layoutInflater)
@@ -309,6 +454,15 @@ class CreatePostActivity : BaseActivity<ActivityCreatePostBinding>() {
         ViewCompat.requestApplyInsets(previewBinding.previewRoot)
     }
 
+    private fun previewUri(image: PostEditorImage): Uri {
+        return when (image) {
+            is PostEditorImage.Existing ->
+                Uri.parse(NetworkConfig.resolveMediaUrl(image.url))
+
+            is PostEditorImage.Local -> Uri.parse(image.uriString)
+        }
+    }
+
     private fun applyPreviewPositionInsets(previewBinding: DialogImagePreviewBinding) {
         val baseMargin = resources.getDimensionPixelSize(
             R.dimen.post_image_preview_position_margin
@@ -346,8 +500,8 @@ class CreatePostActivity : BaseActivity<ActivityCreatePostBinding>() {
     }
 
     private fun deleteImage(position: Int) {
-        if (position !in selectedImageUris.indices) return
-        selectedImageUris.removeAt(position)
+        if (position !in editorImages.indices) return
+        editorImages.removeAt(position)
         renderImageSlots()
     }
 
@@ -362,13 +516,15 @@ class CreatePostActivity : BaseActivity<ActivityCreatePostBinding>() {
     private fun updatePublishButtonState(
         hasContent: Boolean = binding.etContent.text?.isNotBlank() == true
     ) {
-        binding.btnPublish.text = if (isSubmitting) {
-            getText(R.string.post_publishing)
-        } else {
-            getText(R.string.post_publish)
+        val canSubmit = !isSubmitting && !isLoadingOriginal && !isLoadFailed
+        binding.btnPublish.text = when {
+            isSubmitting && isEditMode -> getText(R.string.post_saving)
+            isSubmitting -> getText(R.string.post_publishing)
+            isEditMode -> getText(R.string.post_save)
+            else -> getText(R.string.post_publish)
         }
-        binding.btnPublish.isEnabled = !isSubmitting
-        binding.btnPublish.alpha = if (isSubmitting) DISABLED_ALPHA else 1f
+        binding.btnPublish.isEnabled = canSubmit
+        binding.btnPublish.alpha = if (canSubmit) 1f else DISABLED_ALPHA
         binding.btnPublish.setBackgroundResource(
             if (hasContent) {
                 R.drawable.bg_post_publish_button
@@ -385,25 +541,6 @@ class CreatePostActivity : BaseActivity<ActivityCreatePostBinding>() {
                 }
             )
         )
-    }
-
-    private fun renderSubmitState(state: CreatePostUiState) {
-        isSubmitting = state.isSubmitting
-        listOf(
-            binding.ivPostImage1,
-            binding.ivPostImage2,
-            binding.ivPostImage3,
-            binding.ivPostImage4,
-            binding.ivPostImage5
-        ).forEachIndexed { index, imageView ->
-            val canManageImage = !isSubmitting && selectedImageUris.getOrNull(index) != null
-            imageView.isClickable = canManageImage
-            imageView.isFocusable = canManageImage
-        }
-        val canAddMore = !isSubmitting && selectedImageUris.size < MAX_IMAGE_COUNT
-        binding.btnAddImage.isEnabled = canAddMore
-        binding.btnAddImage.alpha = if (canAddMore) 1f else DISABLED_ALPHA
-        updatePublishButtonState()
     }
 
     private fun showCreatePostError(error: CreatePostError) {
@@ -428,15 +565,44 @@ class CreatePostActivity : BaseActivity<ActivityCreatePostBinding>() {
                 getString(R.string.post_image_upload_failed)
 
             CreatePostError.INVALID_POST -> getString(R.string.post_invalid)
-            CreatePostError.SESSION_EXPIRED -> getString(R.string.auth_error_session_expired)
+            CreatePostError.NO_PERMISSION -> getString(R.string.post_no_permission)
+            CreatePostError.POST_NOT_FOUND -> getString(R.string.forum_detail_not_found)
             CreatePostError.PUBLISH_FAILED -> getString(R.string.post_publish_failed)
+            CreatePostError.UPDATE_FAILED -> getString(R.string.post_save_failed)
         }
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
-    private companion object {
-        const val MAX_IMAGE_COUNT = 5
-        const val KEY_SELECTED_IMAGE_URIS = "selected_image_uris"
-        const val DISABLED_ALPHA = 0.5f
+    private fun openLoginAndClearTask() {
+        startActivity(
+            Intent(this, LoginActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
+        )
+        finish()
+    }
+
+    companion object {
+        private const val MAX_IMAGE_COUNT = 5
+        private const val INVALID_POST_ID = 0L
+        private const val EXTRA_POST_ID = "post_id"
+        private const val KEY_EDITOR_IMAGES = "editor_images"
+        private const val KEY_HAS_APPLIED_ORIGINAL = "has_applied_original"
+        private const val IMAGE_TYPE_EXISTING = "existing:"
+        private const val IMAGE_TYPE_LOCAL = "local:"
+        private const val DISABLED_ALPHA = 0.5f
+
+        /**
+         * 创建进入编辑帖子页面的 Intent。
+         *
+         * @param context 用于创建 Intent 的上下文
+         * @param postId 要编辑的帖子编号
+         * @return 编辑页面 Intent
+         */
+        fun createEditIntent(context: Context, postId: Long): Intent {
+            return Intent(context, CreatePostActivity::class.java).apply {
+                putExtra(EXTRA_POST_ID, postId)
+            }
+        }
     }
 }

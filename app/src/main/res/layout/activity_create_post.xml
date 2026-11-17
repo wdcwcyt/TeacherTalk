@@ -19,7 +19,7 @@
             android:layout_width="@dimen/post_header_action_size"
             android:layout_height="@dimen/post_header_action_size"
             android:layout_marginStart="@dimen/post_header_side_margin"
-            android:background="?attr/selectableItemBackgroundBorderless"
+            android:background="@android:color/transparent"
             android:clickable="true"
             android:contentDescription="@string/post_back"
             android:focusable="true"
@@ -73,6 +73,57 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/postHeader" />
+
+    <ProgressBar
+        android:id="@+id/progressEditorLoading"
+        android:layout_width="@dimen/forum_loading_progress_size"
+        android:layout_height="@dimen/forum_loading_progress_size"
+        android:indeterminateTint="@color/main_primary"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerDivider" />
+
+    <LinearLayout
+        android:id="@+id/layoutEditorError"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/forum_state_horizontal_margin"
+        android:layout_marginEnd="@dimen/forum_state_horizontal_margin"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerDivider">
+
+        <TextView
+            android:id="@+id/tvEditorErrorMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/main_text_secondary"
+            android:textSize="@dimen/forum_state_text_size" />
+
+        <TextView
+            android:id="@+id/btnRetryEditor"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/forum_retry_min_height"
+            android:layout_marginTop="@dimen/forum_retry_top_margin"
+            android:background="@android:color/transparent"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:minWidth="@dimen/forum_retry_min_width"
+            android:paddingStart="@dimen/forum_retry_horizontal_padding"
+            android:paddingEnd="@dimen/forum_retry_horizontal_padding"
+            android:text="@string/post_load_retry"
+            android:textColor="@color/main_primary"
+            android:textSize="@dimen/forum_retry_text_size"
+            android:visibility="gone" />
+    </LinearLayout>
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollEditor"
@@ -198,7 +249,7 @@
                                 android:clickable="true"
                                 android:contentDescription="@string/post_add_image"
                                 android:focusable="true"
-                                android:foreground="?attr/selectableItemBackgroundBorderless">
+                                android:foreground="@android:color/transparent">
 
                                 <ImageView
                                     android:layout_width="@dimen/post_image_add_size"
