@@ -3,6 +3,7 @@ package com.zl.teachertalk.net
 import com.zl.teachertalk.bean.ApiResponse
 import com.zl.teachertalk.bean.AuthResult
 import com.zl.teachertalk.bean.AvatarResponse
+import com.zl.teachertalk.bean.CancelAccountRequest
 import com.zl.teachertalk.bean.CreatedPost
 import com.zl.teachertalk.bean.CommentCreateRequest
 import com.zl.teachertalk.bean.ForumPage
@@ -56,6 +57,11 @@ interface ApiService {
 
     @GET("api/auth/me")
     suspend fun getCurrentUser(): Response<ApiResponse<UserInfoBean>>
+
+    @POST("api/users/me/cancel")
+    suspend fun cancelCurrentUserAccount(
+        @Body request: CancelAccountRequest
+    ): Response<ApiResponse<Any>>
 
     @Multipart
     @PUT("api/users/me/avatar")

@@ -1,9 +1,11 @@
 package com.zl.teachertalk.ui.auth
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.zl.teachertalk.R
@@ -19,6 +21,18 @@ import com.zl.teachertalk.ui.main.MainActivity
  * 登录页：请求短信验证码、登录并进入主页。
  */
 class LoginActivity : BaseActivity<ActivityLoginBinding>() {
+
+    private val roleSelectLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode != Activity.RESULT_OK) return@registerForActivityResult
+        val role = result.data
+            ?.getStringExtra(RoleSelectActivity.EXTRA_SELECTED_ROLE)
+            .orEmpty()
+        if (role.isNotBlank()) {
+            startActivity(RegisterActivity.createIntent(this, role))
+        }
+    }
 
     private val viewModel: LoginViewModel by lazy {
         ViewModelProvider(
@@ -47,7 +61,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
             )
         }
         binding.txtRegister.setOnClickListener {
-            startActivity(Intent(this, RegisterActivity::class.java))
+            roleSelectLauncher.launch(RoleSelectActivity.createIntent(this))
         }
 
         observeViewModel()

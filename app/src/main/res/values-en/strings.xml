@@ -87,6 +87,18 @@
     <string name="profile_logout_confirm_message">Are you sure you want to log out?</string>
     <string name="profile_logout_cancel">Cancel</string>
     <string name="profile_logout_confirm">Log out</string>
+    <string name="profile_cancel_account">Delete account</string>
+    <string name="profile_cancel_account_title">Delete account</string>
+    <string name="profile_cancel_account_warning">After deletion, this account can no longer log in and the phone number will be released. Your posts, comments, likes, and favorites will be retained.</string>
+    <string name="profile_cancel_account_phone_format">The verification code will be sent to %1$s</string>
+    <string name="profile_cancel_code_hint">Enter the 6-digit SMS code</string>
+    <string name="profile_cancel_get_code">Get code</string>
+    <string name="profile_cancel_code_sending">Sending…</string>
+    <string name="profile_cancel_account_confirm">Delete account</string>
+    <string name="profile_cancel_account_submitting">Deleting…</string>
+    <string name="profile_cancel_account_succeeded">Account deleted</string>
+    <string name="profile_cancel_invalid_code">The SMS code is incorrect or has expired</string>
+    <string name="profile_cancel_state_conflict">This account status has changed. Log in again.</string>
 
     <!-- Forum list -->
     <string name="forum_search">Search posts</string>
@@ -180,4 +192,9 @@
     <string name="post_image_preview_position">%1$d/%2$d</string>
     <string name="post_image_delete">Delete</string>
     <string name="post_image_cancel">Cancel</string>
+
+    <!-- Role selection -->
+    <string name="role_select_title">Choose your role</string>
+    <string name="role_parent">Parent</string>
+    <string name="role_teacher">Teacher</string>
 </resources>

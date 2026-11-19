@@ -1,5 +1,6 @@
 package com.zl.teachertalk.ui.auth
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,9 +16,13 @@ import com.zl.teachertalk.model.auth.RegisterViewModel
 import com.zl.teachertalk.ui.main.MainActivity
 
 /**
- * 注册页：请求短信验证码、注册默认家长账号并进入主页。
+ * 注册页：请求短信验证码、按身份选择结果注册账号并进入主页。
  */
 class RegisterActivity : BaseActivity<ActivityRegisterBinding>() {
+
+    private val selectedRole: String by lazy {
+        intent.getStringExtra(EXTRA_ROLE).orEmpty()
+    }
 
     private val viewModel: RegisterViewModel by lazy {
         ViewModelProvider(
@@ -42,7 +47,8 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding>() {
         binding.txtRegisterSubmit.setOnClickListener {
             viewModel.register(
                 phone = binding.editPhone.text?.toString().orEmpty(),
-                code = binding.editVerificationCode.text?.toString().orEmpty()
+                code = binding.editVerificationCode.text?.toString().orEmpty(),
+                role = selectedRole
             )
         }
         binding.txtBackToLogin.setOnClickListener { finish() }
@@ -114,7 +120,19 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding>() {
         finish()
     }
 
-    private companion object {
-        const val DISABLED_ALPHA = 0.6f
+    companion object {
+        private const val EXTRA_ROLE = "role"
+        private const val DISABLED_ALPHA = 0.6f
+
+        /**
+         * 创建带注册身份参数的注册页 Intent。
+         *
+         * @param context 用于启动页面的上下文
+         * @param role 身份选择页返回的角色
+         * @return 可直接启动的 Intent
+         */
+        fun createIntent(context: Context, role: String): Intent {
+            return Intent(context, RegisterActivity::class.java).putExtra(EXTRA_ROLE, role)
+        }
     }
 }

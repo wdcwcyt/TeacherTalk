@@ -3,6 +3,7 @@ package com.zl.teachertalk.net
 import com.zl.teachertalk.bean.ApiResponse
 import com.zl.teachertalk.bean.AuthResult
 import com.zl.teachertalk.bean.AvatarResponse
+import com.zl.teachertalk.bean.CancelAccountRequest
 import com.zl.teachertalk.bean.LoginRequest
 import com.zl.teachertalk.bean.RegisterRequest
 import com.zl.teachertalk.bean.SendSmsCodeRequest
@@ -69,6 +70,17 @@ class AuthRepository(
         }
 
     /**
+     * 使用当前账号手机号收到的验证码注销账号。
+     *
+     * @param request 只包含验证码的注销请求
+     */
+    suspend fun cancelAccount(request: CancelAccountRequest) {
+        withContext(Dispatchers.IO) {
+            apiService.cancelCurrentUserAccount(request).requireSuccess()
+        }
+    }
+
+    /**
      * 上传并更新当前用户头像。
      *
      * @param file 客户端压缩后的 JPEG 临时文件
@@ -99,6 +111,17 @@ class AuthRepository(
             message = "Response data is empty",
             httpStatus = code()
         )
+    }
+
+    private fun Response<ApiResponse<Any>>.requireSuccess() {
+        val responseBody = body()
+        if (!isSuccessful || responseBody == null || responseBody.code != 0) {
+            throw ApiException(
+                code = responseBody?.code ?: code(),
+                message = responseBody?.message?.takeIf { it.isNotBlank() } ?: message(),
+                httpStatus = code()
+            )
+        }
     }
 
     private companion object {

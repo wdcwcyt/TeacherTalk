@@ -604,13 +604,43 @@
                 <TextView
                     android:id="@+id/btnLogout"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/profile_logout_min_height"
+                    android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
                     android:clickable="true"
                     android:focusable="true"
                     android:gravity="center"
+                    android:minHeight="@dimen/profile_logout_min_height"
+                    android:paddingStart="@dimen/profile_menu_horizontal_padding"
+                    android:paddingEnd="@dimen/profile_menu_horizontal_padding"
                     android:text="@string/profile_logout"
                     android:textColor="@color/profile_text_secondary"
+                    android:textSize="@dimen/profile_logout_text_size" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardCancelAccount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/profile_card_gap"
+                app:cardBackgroundColor="@color/main_surface"
+                app:cardCornerRadius="@dimen/profile_card_corner_radius"
+                app:cardElevation="0dp"
+                app:strokeColor="@android:color/transparent"
+                app:strokeWidth="0dp">
+
+                <TextView
+                    android:id="@+id/btnCancelAccount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:minHeight="@dimen/profile_logout_min_height"
+                    android:paddingStart="@dimen/profile_menu_horizontal_padding"
+                    android:paddingEnd="@dimen/profile_menu_horizontal_padding"
+                    android:text="@string/profile_cancel_account"
+                    android:textColor="@color/profile_log_out"
                     android:textSize="@dimen/profile_logout_text_size" />
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>

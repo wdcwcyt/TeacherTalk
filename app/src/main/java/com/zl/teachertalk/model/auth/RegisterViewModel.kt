@@ -20,7 +20,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /**
- * 注册页流程控制：请求验证码、提交家长账号注册并保存会话。
+ * 注册页流程控制：请求验证码、按用户选择的身份提交注册并保存会话。
  *
  * @param authRepository 认证数据仓库
  * @param sessionManager 登录会话存储
@@ -96,20 +96,23 @@ class RegisterViewModel(
     }
 
     /**
-     * 使用手机号和验证码注册家长账号。
+     * 使用手机号、验证码和身份选择结果注册账号。
      *
      * @param phone 用户输入的手机号
      * @param code 用户输入的验证码
+     * @param role 用户在身份选择页选择的角色
      */
-    fun register(phone: String, code: String) {
+    fun register(phone: String, code: String, role: String) {
         val state = _uiState.value ?: AuthUiState()
         if (state.isRequestingCode || state.isSubmitting) return
 
         val normalizedPhone = phone.trim()
         val normalizedCode = code.trim()
+        val normalizedRole = role.trim()
         val validationError = when {
             !PHONE_REGEX.matches(normalizedPhone) -> AuthError.INVALID_PHONE
             !CODE_REGEX.matches(normalizedCode) -> AuthError.INVALID_CODE
+            normalizedRole.isBlank() -> AuthError.INVALID_INPUT
             else -> null
         }
         if (validationError != null) {
@@ -125,7 +128,7 @@ class RegisterViewModel(
                         phone = normalizedPhone,
                         code = normalizedCode,
                         nickname = null,
-                        role = DEFAULT_ROLE
+                        role = normalizedRole
                     )
                 )
                 sessionManager.saveSession(result.token, result.user)
@@ -203,8 +206,5 @@ class RegisterViewModel(
         private val PHONE_REGEX = Regex("^1[3-9]\\d{9}$")
         private val CODE_REGEX = Regex("^\\d{6}$")
         private const val COUNTDOWN_INTERVAL_MILLIS = 1_000L
-
-        // 当前注册页不展示身份选择，按产品决定默认注册为家长。
-        private const val DEFAULT_ROLE = "PARENT"
     }
 }

@@ -32,6 +32,15 @@ data class LoginRequest(
 )
 
 /**
+ * 注销当前账号。
+ *
+ * @param code 当前账号绑定手机号收到的 6 位短信验证码
+ */
+data class CancelAccountRequest(
+    val code: String
+)
+
+/**
  * 使用手机号和短信验证码注册。
  *
  * @param phone 注册手机号
